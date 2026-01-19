@@ -110,7 +110,6 @@ function showError(message) {
     errorText.innerHTML =
       `${message}<br><br>` +
       `Expected files like <code>${baseUrl}${filePrefix}0001.${ext}</code>.<br>` +
-      `If you're running <code>python3 -m http.server</code>, make sure <code>images/</code> is next to <code>index.html</code>.`;
   }
   if (errorOverlay) errorOverlay.dataset.show = "true";
 }
