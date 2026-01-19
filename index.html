@@ -363,15 +363,25 @@
       If you would like to know more about following Christ, please use the form below to reach us.
     </p>
 
-    <form id="contactForm" class="contact-grid" style="text-align:left;">
+    <form name="contact"
+          method="POST"
+          data-netlify="true"
+          data-netlify-recaptcha="true"
+          netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="contact" />
+
+      <p style="display:none;">
+        <label>Don’t fill this out: <input name="bot-field" /></label>
+      </p>
+
       <div class="field">
         <label for="name">Name</label>
-        <input id="name" name="name" autocomplete="name" required />
+        <input id="name" name="name" required />
       </div>
 
       <div class="field">
         <label for="email">Email</label>
-        <input id="email" name="email" type="email" autocomplete="email" required />
+        <input id="email" name="email" type="email" required />
       </div>
 
       <div class="field">
@@ -379,13 +389,11 @@
         <textarea id="message" name="message" required></textarea>
       </div>
 
-      <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY_HERE"></div>
+      <div data-netlify-recaptcha="true"></div>
 
       <div class="contact-actions">
-        <button class="btn" type="submit" id="submitBtn">Send</button>
+        <button class="btn" type="submit">Send</button>
       </div>
-
-      <div id="formStatus"></div>
     </form>
   </div>
 </section>
