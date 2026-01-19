@@ -356,32 +356,22 @@
 </section>
 
 <section class="spacer" id="contact">
-  <div style="max-width:720px; text-align:center; line-height:1.5;">
+  <div style="max-width:720px; text-align:center; line-height:1.5; width:100%;">
     <div style="font-weight:600; margin-bottom:12px;">Contact</div>
 
     <p style="margin:0 0 20px;">
       If you would like to know more about following Christ, please use the form below to reach us.
     </p>
 
-    <form name="contact"
-          method="POST"
-          data-netlify="true"
-          data-netlify-recaptcha="true"
-          netlify-honeypot="bot-field">
-      <input type="hidden" name="form-name" value="contact" />
-
-      <p style="display:none;">
-        <label>Don’t fill this out: <input name="bot-field" /></label>
-      </p>
-
+    <form id="contactForm" class="contact-grid" style="text-align:left;">
       <div class="field">
         <label for="name">Name</label>
-        <input id="name" name="name" required />
+        <input id="name" name="name" autocomplete="name" required />
       </div>
 
       <div class="field">
         <label for="email">Email</label>
-        <input id="email" name="email" type="email" required />
+        <input id="email" name="email" type="email" autocomplete="email" required />
       </div>
 
       <div class="field">
@@ -389,12 +379,13 @@
         <textarea id="message" name="message" required></textarea>
       </div>
 
-      <div data-netlify-recaptcha="true"></div>
-
       <div class="contact-actions">
-        <button class="btn" type="submit">Send</button>
+        <button class="btn" type="submit" id="submitBtn">Send</button>
       </div>
+
+      <div id="formStatus"></div>
     </form>
+
   </div>
 </section>
 
@@ -423,29 +414,8 @@
   </div>
 </section>
 
-<script>
-  // Demo handler: checks reCAPTCHA token exists; does NOT send anything yet.
-  const form = document.getElementById("contactForm");
-  const statusEl = document.getElementById("formStatus");
-  const submitBtn = document.getElementById("submitBtn");
 
-  form?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    statusEl.textContent = "";
 
-    const token = window.grecaptcha?.getResponse?.();
-    if (!token) {
-      statusEl.textContent = "Please complete the reCAPTCHA.";
-      return;
-    }
-
-    submitBtn.disabled = true;
-    statusEl.textContent = "Form ready (reCAPTCHA completed). Hook this up to your server to send.";
-    submitBtn.disabled = false;
-  });
-</script>
-
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script type="module" src="./sequence_updated.js"></script>
 
 <footer style="padding:40px 0; text-align:center; color:#666;">
@@ -467,6 +437,16 @@
 
 <script>
   document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
+<script>
+  const form = document.getElementById("contactForm");
+  const statusEl = document.getElementById("formStatus");
+
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    statusEl.textContent = "Thanks — this form isn’t wired up yet.";
+  });
 </script>
 </body>
 </html>
