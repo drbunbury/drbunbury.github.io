@@ -68,13 +68,6 @@ function frameUrl(i) {
   return `${baseUrl}${filePrefix}${n}.${ext}`;
 }
 
-function updateHeaderVar() {
-  const h = header?.getBoundingClientRect().height ?? 64;
-  document.documentElement.style.setProperty("--header-h", `${h}px`);
-}
-updateHeaderVar();
-window.addEventListener("resize", updateHeaderVar);
-
 // Weighted dwell timeline
 let totalWeight = 0;
 const cumulative = [];
