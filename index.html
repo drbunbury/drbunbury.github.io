@@ -4,10 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Victorious Cross</title>
+
   <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css"
   />
+
   <style>
     :root{
       --header-h: 64px;
@@ -16,6 +18,7 @@
       --bg: #fff;
       --line: #111;
     }
+
     * { box-sizing: border-box; }
     html, body { height: 100%; }
 
@@ -27,6 +30,7 @@
       padding-top: var(--header-h);
     }
 
+    /* Header */
     header.site-header {
       position: fixed;
       top: 0;
@@ -37,42 +41,35 @@
       align-items: center;
       padding: 0 18px;
 
-      /* translucent surface */
       background-color: rgba(255, 255, 255, 0.72);
-
-      /* blur whatever scrolls underneath */
       backdrop-filter: blur(12px) saturate(110%);
       -webkit-backdrop-filter: blur(12px) saturate(110%);
 
-      /* subtle edge definition */
       border-bottom: 0;
-
       z-index: 1000;
     }
 
+    /* soft fade under the header (no hard line) */
     header.site-header::after {
       content: "";
       position: absolute;
       left: 0;
       right: 0;
-      bottom: -8px;     /* extend below the bar */
+      bottom: -8px;
       height: 8px;
-
-      /* a subtle fade from header -> page */
       background: linear-gradient(
         to bottom,
         rgba(255, 255, 255, 0.72),
         rgba(255, 255, 255, 0)
       );
-
       pointer-events: none;
     }
 
     .site-title {
       position: absolute;
-      top: 20%;
+      top: 50%;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translate(-50%, -50%);
       font-size: 22px;
       font-weight: 600;
       letter-spacing: 0.02em;
@@ -86,7 +83,7 @@
       border: 0;
       background: transparent;
       padding: 10px;
-      border-radius: 0px;
+      border-radius: 0;
       cursor: pointer;
       display: grid;
       place-items: center;
@@ -96,7 +93,7 @@
       outline-offset: 2px;
     }
 
-    /* Icon: hamburger -> crucifix + base line */
+    /* Icon: hamburger -> X */
     .menu-icon {
       width: 28px;
       height: 26px;
@@ -107,17 +104,15 @@
       position: absolute;
       height: 2px;
       background: var(--line);
-      border-radius: 0px;
+      border-radius: 0;
       left: 50%;
       transform: translateX(-50%);
       transition: transform 220ms ease, top 220ms ease, width 220ms ease;
     }
-    /* Closed hamburger */
-    .menu-icon span:nth-child(1) { top: 4px; width: 22px; }
+    .menu-icon span:nth-child(1) { top: 4px;  width: 22px; }
     .menu-icon span:nth-child(2) { top: 12px; width: 22px; }
     .menu-icon span:nth-child(3) { top: 20px; width: 22px; }
 
-    /* Open X */
     .menu-btn[aria-expanded="true"] .menu-icon span:nth-child(1) {
       top: 12px;
       width: 22px;
@@ -134,6 +129,7 @@
       transform: translateX(-50%);
     }
 
+    /* Menu */
     .menu-panel {
       position: fixed;
       top: var(--header-h);
@@ -164,7 +160,7 @@
     .menu-panel a {
       display: block;
       padding: 12px;
-      border-radius: 0px;
+      border-radius: 0;
       text-decoration: none;
       color: var(--text);
       font-size: 14px;
@@ -179,42 +175,41 @@
     }
     .backdrop[data-open="true"] { display: block; }
 
+    /* Sections */
     .spacer {
       height: 40vh;
       display: grid;
       place-items: center;
       color: var(--muted);
     }
-    .top-spacer {
-      height: var(--header-h);
-    }
+
     .sequence-section {
       position: relative;
-      height: 300vh;          /* controls how long the scroll animation lasts */
+      height: 300vh;
       background: var(--bg);
     }
-    
+
     .sequence-sticky {
       position: sticky;
       top: var(--header-h);
-      height: calc(100dvh - var(--header-h));  /* stage height */
+      height: calc(100dvh - var(--header-h));
       overflow: hidden;
     }
-    
+
     canvas {
       width: 100%;
       height: 100%;
       display: block;
       background: #fff;
     }
-    
-    /* fallback for browsers that don't support dvh */
+
     @supports not (height: 100dvh) {
       .sequence-sticky {
         height: calc(100vh - var(--header-h));
       }
     }
 
+    /* Overlays */
     #loadingOverlay {
       position: absolute;
       inset: 0;
@@ -237,286 +232,232 @@
       text-align: center;
     }
     #errorOverlay[data-show="true"] { display: grid; }
+
     .error-box {
       width: min(560px, 92vw);
       border: 1px solid rgba(0,0,0,0.25);
-      border-radius: 0px;
+      border-radius: 0;
       padding: 14px 16px;
       background: #fff;
-      .menu-panel {
-      box-shadow:
-        0 1px 0 rgba(0,0,0,0.20),
-        1px 2px 0 rgba(0,0,0,0.15),
-        2px 4px 0 rgba(0,0,0,0.08),
-        3px 6px 0 rgba(0,0,0,0.04);
-     }
     }
     .error-title { font-weight: 700; margin-bottom: 6px; }
     .error-muted { color: #555; line-height: 1.35; }
-    code { background: rgba(0,0,0,0.06); padding: 2px 6px; border-radius: 0px; }
+    code { background: rgba(0,0,0,0.06); padding: 2px 6px; border-radius: 0; }
 
-    .contact-wrap{
-  width: min(720px, 92vw);
-  margin: 0 auto;
-  padding: 28px 0 60px;
-}
+    /* Form */
+    .contact-grid{
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
 
-.contact-card{
-  border: 1px solid rgba(0,0,0,0.25);
-  border-radius: 0px;
-  background: #fff;
-  .menu-panel {
-  box-shadow:
-    0 1px 0 rgba(0,0,0,0.20),
-    1px 2px 0 rgba(0,0,0,0.15),
-    2px 4px 0 rgba(0,0,0,0.08),
-    3px 6px 0 rgba(0,0,0,0.04);
-  }
-  padding: 18px;
-}
+    .field label{
+      display: block;
+      font-size: 13px;
+      margin: 0 0 6px;
+      color: #333;
+    }
 
-.contact-card h2{
-  margin: 0 0 10px;
-  font-size: 18px;
-}
+    .field input, .field textarea{
+      width: 100%;
+      border: 1px solid rgba(0,0,0,0.25);
+      border-radius: 0;
+      padding: 10px 12px;
+      font: inherit;
+      background: #fff;
+    }
 
-.contact-grid{
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-}
+    .field textarea{
+      min-height: 120px;
+      resize: vertical;
+    }
 
-.field label{
-  display: block;
-  font-size: 13px;
-  margin: 0 0 6px;
-  color: #333;
-}
+    .contact-actions{
+      display: flex;
+      justify-content: center; /* center the send button */
+      margin-top: 16px;
+    }
 
-.field input, .field textarea{
-  width: 100%;
-  border: 1px solid rgba(0,0,0,0.25);
-  border-radius: 0px;
-  padding: 10px 12px;
-  font: inherit;
-  background: #fff;
-}
+    .btn{
+      border: 0;
+      border-radius: 0;
+      padding: 10px 14px;
+      background: #111;
+      color: #fff;
+      cursor: pointer;
+      font-weight: 600;
+    }
 
-.field textarea{
-  min-height: 120px;
-  resize: vertical;
-}
+    .btn[disabled]{
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
 
-.contact-actions{
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-top: 12px;
-}
-
-.btn{
-  border: 0;
-  border-radius: 0px;
-  padding: 10px 14px;
-  background: #111;
-  color: #fff;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.btn[disabled]{
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.form-note{
-  font-size: 13px;
-  color: #555;
-  line-height: 1.35;
-}
-
-#formStatus{
-  margin-top: 10px;
-  font-size: 13px;
-  color: #111;
-}
+    #formStatus{
+      margin-top: 10px;
+      font-size: 13px;
+      color: #111;
+      text-align: center;
+    }
   </style>
 </head>
+
 <body>
-  <header class="site-header" id="siteHeader">
-    <div class="site-title">The Victorious Cross</div>
-    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menuPanel" aria-label="Open menu">
+<header class="site-header" id="siteHeader">
+  <div class="site-title">The Victorious Cross</div>
+  <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menuPanel" aria-label="Open menu">
       <span class="menu-icon" aria-hidden="true">
         <span></span><span></span><span></span>
       </span>
-    </button>
-  </header>
+  </button>
+</header>
 
-  <div class="backdrop" id="menuBackdrop" data-open="false" aria-hidden="true"></div>
-  <nav class="menu-panel" id="menuPanel" data-open="false">
-    <a href="#sequenceSection">The Victorious Cross</a>
-    <a href="#more-info">Tell me more</a>
-    <a href="#contact">Contact Us</a>
-    <a href="#resources">Recommended Resources</a>
-    <a href="#about">About Us</a>
-  </nav>
+<div class="backdrop" id="menuBackdrop" data-open="false" aria-hidden="true"></div>
+<nav class="menu-panel" id="menuPanel" data-open="false">
+  <a href="#sequenceSection">The Victorious Cross</a>
+  <a href="#more-info">Tell me more</a>
+  <a href="#contact">Contact Us</a>
+  <a href="#resources">Recommended Resources</a>
+  <a href="#about">About Us</a>
+</nav>
 
-  <div class="top-spacer"></div>
+<section class="sequence-section" id="sequenceSection">
+  <div class="sequence-sticky">
+    <canvas id="sequenceCanvas"></canvas>
 
-  <section class="sequence-section" id="sequenceSection">
-    <div class="sequence-sticky">
-      <canvas id="sequenceCanvas"></canvas>
-
-      <div id="loadingOverlay">
-        <div style="width:min(360px, 80vw);">
-          <div style="margin-bottom:10px;">Loading…</div>
-          <div style="height:8px; background:rgba(0,0,0,0.15); border-radius:999px; overflow:hidden;">
-            <div id="loadingBar" style="height:100%; width:0%; background:#000;"></div>
-          </div>
-          <div id="loadingPct" style="margin-top:10px; opacity:0.8;">0%</div>
+    <div id="loadingOverlay">
+      <div style="width:min(360px, 80vw);">
+        <div style="margin-bottom:10px;">Loading…</div>
+        <div style="height:8px; background:rgba(0,0,0,0.15); border-radius:999px; overflow:hidden;">
+          <div id="loadingBar" style="height:100%; width:0%; background:#000;"></div>
         </div>
-      </div>
-
-      <div id="errorOverlay" data-show="false">
-        <div class="error-box">
-          <div class="error-title">Images didn’t load</div>
-          <div class="error-muted" id="errorText"></div>
-        </div>
+        <div id="loadingPct" style="margin-top:10px; opacity:0.8;">0%</div>
       </div>
     </div>
-  </section>
 
-  <section class="spacer" id="more-info">
-    <div style="max-width:720px; text-align:center; line-height:1.5;">
-      <div style="font-weight:600; margin-bottom:10px;">Tell Me More</div>
-      <p style="margin:0;">
-        Christians are not good people. We are forgiven people. The Bible makes the extraordinary claim that God came to earth...
-        [full gospel presentation, potentially a video]
-      </p>
-    </div>
-  </section>
-
-  <section class="spacer" id="contact">
-    <div style="max-width:720px; text-align:center; line-height:1.5;">
-      <div style="font-weight:600; margin-bottom:12px;">Contact</div>
-
-      <p style="margin:0 0 20px;">
-        If you would like to know more about following Christ, please use the form below
-        to reach us.
-      </p>
-
-      <form id="contactForm" class="contact-grid" style="text-align:left;">
-        <div class="field">
-          <label for="name">Name</label>
-          <input id="name" name="name" autocomplete="name" required />
-        </div>
-
-        <div class="field">
-          <label for="email">Email</label>
-          <input id="email" name="email" type="email" autocomplete="email" required />
-        </div>
-
-        <div class="field">
-          <label for="message">Message</label>
-          <textarea id="message" name="message" required></textarea>
-        </div>
-
-        <!-- reCAPTCHA v2 checkbox -->
-        <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY_HERE"></div>
-
-        <div class="contact-actions">
-          <button class="btn" type="submit" id="submitBtn">Send</button>
-        </div>
-
-        <div id="formStatus"></div>
-      </form>
-    </div>
-  </section>
-
-
-  <section class="spacer" id="resources">
-    <div style="text-align:center;">
-      <div style="font-weight:600; margin-bottom:12px;">Resources</div>
-      <div style="display:flex; flex-direction:column; gap:6px;">
-        <a href="https://bibleproject.com" target="_blank" rel="noopener"
-           style="color:#111; text-decoration:underline;">
-          The Bible Project
-        </a>
-        <a href="https://www.sasra.org.uk" target="_blank" rel="noopener"
-           style="color:#111; text-decoration:underline;">
-          SASRA
-        </a>
+    <div id="errorOverlay" data-show="false">
+      <div class="error-box">
+        <div class="error-title">Images didn’t load</div>
+        <div class="error-muted" id="errorText"></div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section class="spacer" id="about">
-    <div style="max-width:720px; text-align:center; line-height:1.5;">
-      <div style="font-weight:600; margin-bottom:10px;">About</div>
-      <p style="margin:0;">
-        'The Victorious Cross' was created by serving Christians to tell the wonderful truth of our Lord and Saviour Jesus Christ.
-        God wants to use us in the wonderful work of telling others about the Lord Jesus. This tract is designed so that you can have
-        something that you would want to give to a friend... to put a stone in their shoe and lift up the Lord...
-      </p>
-    </div>
-  </section>
+<section class="spacer" id="more-info">
+  <div style="max-width:720px; text-align:center; line-height:1.5;">
+    <div style="font-weight:600; margin-bottom:10px;">Tell Me More</div>
+    <p style="margin:0;">
+      Christians are not good people. We are forgiven people. The Bible makes the extraordinary claim that God came to earth...
+      [full gospel presentation, potentially a video]
+    </p>
+  </div>
+</section>
 
-  <script>
-    // Demo handler: shows the token exists, but does NOT actually send anywhere yet.
-    // For real use, POST to your backend and verify the token with Google using your SECRET key.
-    const form = document.getElementById("contactForm");
-    const statusEl = document.getElementById("formStatus");
-    const submitBtn = document.getElementById("submitBtn");
+<section class="spacer" id="contact">
+  <div style="max-width:720px; text-align:center; line-height:1.5;">
+    <div style="font-weight:600; margin-bottom:12px;">Contact</div>
 
-    form?.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      statusEl.textContent = "";
+    <p style="margin:0 0 20px;">
+      If you would like to know more about following Christ, please use the form below to reach us.
+    </p>
 
-      const token = window.grecaptcha?.getResponse?.();
-      if (!token) {
-        statusEl.textContent = "Please complete the reCAPTCHA.";
-        return;
-      }
+    <form id="contactForm" class="contact-grid" style="text-align:left;">
+      <div class="field">
+        <label for="name">Name</label>
+        <input id="name" name="name" autocomplete="name" required />
+      </div>
 
-      submitBtn.disabled = true;
-      statusEl.textContent = "Form ready (reCAPTCHA completed). Hook this up to your server to send.";
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="email" required />
+      </div>
 
-      // Example of what you'd send:
-      // const payload = {
-      //   name: form.name.value,
-      //   email: form.email.value,
-      //   message: form.message.value,
-      //   recaptchaToken: token
-      // };
-      // await fetch("/api/contact", { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(payload) });
+      <div class="field">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" required></textarea>
+      </div>
 
-      submitBtn.disabled = false;
-    });
-  </script>
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-  <script type="module" src="./sequence_updated.js"></script>
-  <footer style="padding:40px 0; text-align:center; color:#666;">
-    <div style="display:flex; justify-content:center; gap:18px; margin-bottom:10px;">
-      <a href="https://twitter.com/YOUR_HANDLE" target="_blank" rel="noopener"
-         aria-label="X / Twitter" style="color:#111; font-size:22px;">
-        <i class="lab la-twitter"></i>
+      <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY_HERE"></div>
+
+      <div class="contact-actions">
+        <button class="btn" type="submit" id="submitBtn">Send</button>
+      </div>
+
+      <div id="formStatus"></div>
+    </form>
+  </div>
+</section>
+
+<section class="spacer" id="resources">
+  <div style="text-align:center;">
+    <div style="font-weight:600; margin-bottom:12px;">Resources</div>
+    <div style="display:flex; flex-direction:column; gap:6px;">
+      <a href="https://bibleproject.com" target="_blank" rel="noopener" style="color:#111; text-decoration:underline;">
+        The Bible Project
       </a>
-      <a href="https://instagram.com/YOUR_HANDLE" target="_blank" rel="noopener"
-         aria-label="Instagram" style="color:#111; font-size:22px;">
-        <i class="lab la-instagram"></i>
-      </a>
-      <a href="https://youtube.com/YOUR_CHANNEL" target="_blank" rel="noopener"
-         aria-label="YouTube" style="color:#111; font-size:22px;">
-        <i class="lab la-youtube"></i>
+      <a href="https://www.sasra.org.uk" target="_blank" rel="noopener" style="color:#111; text-decoration:underline;">
+        SASRA
       </a>
     </div>
-    <div style="font-size:12px;">
-      © <span id="year"></span> The Victorious Cross
-    </div>
-  </footer>
+  </div>
+</section>
 
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
+<section class="spacer" id="about">
+  <div style="max-width:720px; text-align:center; line-height:1.5;">
+    <div style="font-weight:600; margin-bottom:10px;">About</div>
+    <p style="margin:0;">
+      'The Victorious Cross' was created by serving Christians to tell the wonderful truth of our Lord and Saviour Jesus Christ.
+      God wants to use us in the wonderful work of telling others about the Lord Jesus. This tract is designed so that you can have
+      something that you would want to give to a friend... to put a stone in their shoe and lift up the Lord...
+    </p>
+  </div>
+</section>
+
+<script>
+  // Demo handler: checks reCAPTCHA token exists; does NOT send anything yet.
+  const form = document.getElementById("contactForm");
+  const statusEl = document.getElementById("formStatus");
+  const submitBtn = document.getElementById("submitBtn");
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    statusEl.textContent = "";
+
+    const token = window.grecaptcha?.getResponse?.();
+    if (!token) {
+      statusEl.textContent = "Please complete the reCAPTCHA.";
+      return;
+    }
+
+    submitBtn.disabled = true;
+    statusEl.textContent = "Form ready (reCAPTCHA completed). Hook this up to your server to send.";
+    submitBtn.disabled = false;
+  });
+</script>
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script type="module" src="./sequence_updated.js"></script>
+
+<footer style="padding:40px 0; text-align:center; color:#666;">
+  <div style="display:flex; justify-content:center; gap:18px; margin-bottom:10px;">
+    <a href="https://twitter.com/YOUR_HANDLE" target="_blank" rel="noopener" aria-label="X / Twitter" style="color:#111; font-size:22px;">
+      <i class="lab la-twitter"></i>
+    </a>
+    <a href="https://instagram.com/YOUR_HANDLE" target="_blank" rel="noopener" aria-label="Instagram" style="color:#111; font-size:22px;">
+      <i class="lab la-instagram"></i>
+    </a>
+    <a href="https://youtube.com/YOUR_CHANNEL" target="_blank" rel="noopener" aria-label="YouTube" style="color:#111; font-size:22px;">
+      <i class="lab la-youtube"></i>
+    </a>
+  </div>
+  <div style="font-size:12px;">
+    © <span id="year"></span> The Victorious Cross
+  </div>
+</footer>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
 </body>
 </html>
