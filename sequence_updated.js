@@ -3,7 +3,7 @@
 // 1) Menu open/close restored
 // 2) Loads frames from absolute /images/webp/ (WebP only)
 
-const frameCount = 140;
+const frameCount = 200;
 
 // Expected files:
 //   /images/webp/product_0001.webp ... product_0100.webp
