@@ -12,6 +12,8 @@ const filePrefix = "product_";
 const padTo = 4;
 const ext = "webp";
 
+// Global scale (applies on all devices)
+const baseScale = 0.8; // 80% everywhere (tweak)
 
 // Mobile scaling
 const mobileMaxCssWidth = 520;   // treat <= this as "mobile"
@@ -160,23 +162,34 @@ function drawBitmapCenteredNoScaleCrop(bitmap) {
   ctx.fillStyle = "#fff";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  const isMobile = (window.innerWidth || canvas.clientWidth) <= mobileMaxCssWidth;
+    const isMobile = (window.innerWidth || canvas.clientWidth) <= mobileMaxCssWidth;
 
-    // scale in *CSS pixels*, then convert to device pixels
-  const scale = isMobile ? mobileScale : 1;
+    // Base + device scaling
+    const deviceScale = isMobile ? mobileScale : 1;
+    const desiredScale = baseScale * deviceScale;
 
-  const dw = bitmap.width * dpr * scale;
-  const dh = bitmap.height * dpr * scale;
+    // Maximum allowed height (80% of visible canvas)
+    const maxImageHeight = canvas.height * 0.8;
+
+    // Scale needed to fit height constraint
+    const heightFitScale = maxImageHeight / (bitmap.height * dpr);
+
+    // Final scale = smallest valid scale
+    const scale = Math.min(desiredScale, heightFitScale);
+
+    // Final draw size
+    const dw = bitmap.width * dpr * scale;
+    const dh = bitmap.height * dpr * scale;
 
   // ---- NEW: anchor image's RIGHT EDGE relative to canvas centre ----
   const centerX = canvas.width / 2;
 
   // Choose one offset mode:
-  const offset = (typeof rightEdgeOffsetPx === "number")
-    ? rightEdgeOffsetPx * dpr
-    : (typeof rightEdgeOffsetRatio === "number")
-      ? (dw * rightEdgeOffsetRatio)
-      : 0;
+    const offset = (typeof rightEdgeOffsetPx === "number")
+      ? rightEdgeOffsetPx * dpr * scale   // scale it so layout stays consistent
+      : (typeof rightEdgeOffsetRatio === "number")
+        ? (dw * rightEdgeOffsetRatio)
+        : 0;
 
   // Place right edge at centerX + offset
   const dx = (centerX + offset) - dw;
