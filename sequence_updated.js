@@ -152,7 +152,8 @@ function drawBitmapCenteredNoScaleCrop(bitmap) {
     canvas.height = targetH;
   }
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   const dw = bitmap.width * dpr;   // drawn width in device pixels
   const dh = bitmap.height * dpr;
