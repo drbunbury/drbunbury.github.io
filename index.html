@@ -192,13 +192,11 @@
       background: var(--bg);
     }
 
-    .sequence-sticky {
-      position: sticky;
-      top: var(--header-h);
-      height: calc(100vh - var(--header-h));
-      display: grid;
-      place-items: center;
-      overflow: hidden;
+    .sequence-sticky { overflow: hidden; }
+      canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
 
     canvas {
