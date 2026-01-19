@@ -177,7 +177,8 @@
 
     /* Sections */
     .spacer {
-      height: 40vh;
+      min-height: 40vh;      /* was: height: 40vh */
+      padding: 48px 18px;    /* adds breathing room so sections never crash into each other */
       display: grid;
       place-items: center;
       color: var(--muted);
