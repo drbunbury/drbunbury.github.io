@@ -109,7 +109,7 @@ function showError(message) {
   if (errorText) {
     errorText.innerHTML =
       `${message}<br><br>` +
-      `Expected files like <code>${baseUrl}${filePrefix}0001.${ext}</code>.<br>` +
+      `Expected files like <code>${baseUrl}${filePrefix}0001.${ext}</code>.<br>`
   }
   if (errorOverlay) errorOverlay.dataset.show = "true";
 }
