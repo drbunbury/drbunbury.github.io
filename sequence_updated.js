@@ -12,6 +12,11 @@ const filePrefix = "product_";
 const padTo = 4;
 const ext = "webp";
 
+
+// Mobile scaling
+const mobileMaxCssWidth = 520;   // treat <= this as "mobile"
+const mobileScale = 0.65;        // 65% size on mobile (tweak)
+
 // Right-edge anchor offset from canvas center
 // Use ONE of these:
 const rightEdgeOffsetPx = 100;   // e.g. 100 image pixels to the right of centre
@@ -155,8 +160,13 @@ function drawBitmapCenteredNoScaleCrop(bitmap) {
   ctx.fillStyle = "#fff";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  const dw = bitmap.width * dpr;   // drawn width in device pixels
-  const dh = bitmap.height * dpr;
+  const isMobile = (window.innerWidth || canvas.clientWidth) <= mobileMaxCssWidth;
+
+    // scale in *CSS pixels*, then convert to device pixels
+  const scale = isMobile ? mobileScale : 1;
+
+  const dw = bitmap.width * dpr * scale;
+  const dh = bitmap.height * dpr * scale;
 
   // ---- NEW: anchor image's RIGHT EDGE relative to canvas centre ----
   const centerX = canvas.width / 2;
@@ -165,7 +175,7 @@ function drawBitmapCenteredNoScaleCrop(bitmap) {
   const offset = (typeof rightEdgeOffsetPx === "number")
     ? rightEdgeOffsetPx * dpr
     : (typeof rightEdgeOffsetRatio === "number")
-      ? (bitmap.width * rightEdgeOffsetRatio) * dpr
+      ? (dw * rightEdgeOffsetRatio)
       : 0;
 
   // Place right edge at centerX + offset
