@@ -205,16 +205,17 @@ function drawBitmapCenteredNoScaleCrop(bitmap) {
 
   if (visW <= 0 || visH <= 0) return;
 
+  // Convert visible device-pixel region back into source (bitmap) pixels.
+  // We need to undo BOTH dpr and scale.
+  const sx = (visX0 - dx) / (dpr * scale);
+  const sy = (visY0 - dy) / (dpr * scale);
+  const sw = visW / (dpr * scale);
+  const sh = visH / (dpr * scale);
+
   ctx.drawImage(
     bitmap,
-    (visX0 - dx) / dpr,
-    (visY0 - dy) / dpr,
-    visW / dpr,
-    visH / dpr,
-    visX0,
-    visY0,
-    visW,
-    visH
+    sx, sy, sw, sh,   // source rect in bitmap pixels
+    visX0, visY0, visW, visH // dest rect in canvas device pixels
   );
 }
 
