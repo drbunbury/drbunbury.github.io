@@ -3,12 +3,12 @@
 // 1) Menu open/close restored
 // 2) Loads frames from absolute /images/webp/ (WebP only)
 
-const frameCount = 140;
+const frameCount = 160;
 
 // Expected files:
 //   /images/webp/product_0001.webp ... product_0100.webp
 const baseUrl = "/images/webp/";
-const filePrefix = "product_";
+const filePrefix = "VC";
 const padTo = 4;
 const ext = "webp";
 
