@@ -153,6 +153,19 @@
       font-size: 14px;
     }
     .menu-panel a:hover { background: rgba(0,0,0,0.05); }
+    /* Menu: style internal anchors vs external page links (this page only) */
+
+    /* Internal links (same page) start with # */
+    .menu-panel a[href^="#"]{
+      padding-left: 24px;   /* indent */
+      font-weight: 400;     /* normal weight */
+    }
+
+    /* External links (other pages) do NOT start with # */
+    .menu-panel a:not([href^="#"]){
+      padding-left: 12px;   /* keep default */
+      font-weight: 700;     /* bold */
+    }
 
     .backdrop {
       position: fixed;
