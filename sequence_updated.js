@@ -169,7 +169,7 @@ function drawBitmapCenteredNoScaleCrop(bitmap) {
     const desiredScale = baseScale * deviceScale;
 
     // Maximum allowed height (80% of visible canvas)
-    const maxImageHeight = canvas.height * 0.8;
+    const maxImageHeight = canvas.height * 0.95;
 
     // Scale needed to fit height constraint
     const heightFitScale = maxImageHeight / (bitmap.height * dpr);
