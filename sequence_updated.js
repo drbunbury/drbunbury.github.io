@@ -30,14 +30,14 @@ const READY_THRESHOLD = frameCount;
 // Optional dwell weights (0-indexed)
 const weights = Array.from({ length: frameCount }, () => 1);
 // Example dwell (edit/remove as needed)
-weights[0] = 10;
-weights[12] = 10;
-weights[24] = 10;
-weights[36] = 10;
-weights[49] = 10;
-weights[61] = 10;
-weights[73] = 10;
-weights[82] = 10;
+weights[0] = 24;
+weights[12] = 24;
+weights[24] = 24;
+weights[36] = 24;
+weights[49] = 24;
+weights[61] = 24;
+weights[73] = 24;
+weights[82] = 24;
 
 // DOM
 const header = document.getElementById("siteHeader");
