@@ -181,22 +181,23 @@ function drawBitmapCenteredNoScaleCrop(bitmap) {
     const dw = bitmap.width * dpr * scale;
     const dh = bitmap.height * dpr * scale;
 
-  // ---- NEW: anchor image's RIGHT EDGE relative to canvas centre ----
-  const centerX = canvas.width / 2;
+    // Horizontal placement:
+    // Default: centered.
+    // If rightEdgeOffsetPx/Ratio is provided: anchor RIGHT edge relative to canvas center.
+    let dx = (canvas.width - dw) / 2;
 
-  // Choose one offset mode:
-    const offset = (typeof rightEdgeOffsetPx === "number")
-      ? rightEdgeOffsetPx * dpr * scale   // scale it so layout stays consistent
-      : (typeof rightEdgeOffsetRatio === "number")
-        ? (dw * rightEdgeOffsetRatio)
-        : 0;
+    const centerX = canvas.width / 2;
 
-  // Place right edge at centerX + offset
-  const dx = (centerX + offset) - dw;
+    if (typeof rightEdgeOffsetPx === "number") {
+      const offset = rightEdgeOffsetPx * dpr * scale; // scaled so it behaves consistently
+      dx = (centerX + offset) - dw;
+    } else if (typeof rightEdgeOffsetRatio === "number") {
+      const offset = dw * rightEdgeOffsetRatio;
+      dx = (centerX + offset) - dw;
+    }
 
-  // keep vertical centering
-  const dy = (canvas.height - dh) / 2;
-  // ---------------------------------------------------------------
+    // keep vertical centering
+    const dy = (canvas.height - dh) / 2;
 
   const visX0 = Math.max(0, dx);
   const visY0 = Math.max(0, dy);
