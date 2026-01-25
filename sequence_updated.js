@@ -21,7 +21,7 @@ const mobileScale = 0.65;        // 65% size on mobile (tweak)
 
 // Right-edge anchor offset from canvas center
 // Use ONE of these:
-const rightEdgeOffsetPx = 500;   // e.g. 100 image pixels to the right of centre
+const rightEdgeOffsetPx = null;   // e.g. 100 image pixels to the right of centre
 // const rightEdgeOffsetRatio = 0.1; // e.g. 10% of image width to the right of centre
 
 // Hide overlay once everything is decoded
