@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sharing My Faith • The Victorious Cross</title>
+
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css"
+    />
+
+    <style>
+        :root{
+          --header-h: 64px;
+          --text: #111;
+          --muted: #666;
+          --bg: #fff;
+          --line: #111;
+        }
+
+        * { box-sizing: border-box; }
+        html, body { height: 100%; }
+
+        body {
+          margin: 0;
+          font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+          background: var(--bg);
+          color: var(--text);
+          padding-top: var(--header-h);
+        }
+
+        /* Header */
+        header.site-header {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: var(--header-h);
+          display: flex;
+          align-items: center;
+          padding: 0 18px;
+
+          background-color: rgba(255, 255, 255, 0.72);
+          backdrop-filter: blur(12px) saturate(110%);
+          -webkit-backdrop-filter: blur(12px) saturate(110%);
+
+          border-bottom: 0px;
+          z-index: 1000;
+        }
+
+        .site-title {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          font-size: 22px;
+          font-weight: 600;
+          letter-spacing: 0.02em;
+          text-transform: none;
+          white-space: nowrap;
+          pointer-events: none;
+        }
+
+        .menu-btn {
+          margin-left: auto;
+          border: 0;
+          background: transparent;
+          padding: 10px;
+          border-radius: 0;
+          cursor: pointer;
+          display: grid;
+          place-items: center;
+        }
+        .menu-btn:focus-visible {
+          outline: 2px solid rgba(0,0,0,0.35);
+          outline-offset: 2px;
+        }
+
+        /* Icon: hamburger -> X */
+        .menu-icon {
+          width: 28px;
+          height: 26px;
+          position: relative;
+          display: inline-block;
+        }
+        .menu-icon span {
+          position: absolute;
+          height: 2px;
+          background: var(--line);
+          border-radius: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          transition: transform 220ms ease, top 220ms ease, width 220ms ease;
+        }
+        .menu-icon span:nth-child(1) { top: 4px;  width: 22px; }
+        .menu-icon span:nth-child(2) { top: 12px; width: 22px; }
+        .menu-icon span:nth-child(3) { top: 20px; width: 22px; }
+
+        .menu-btn[aria-expanded="true"] .menu-icon span:nth-child(1) {
+          top: 12px;
+          width: 22px;
+          transform: translateX(-50%) rotate(45deg);
+        }
+        .menu-btn[aria-expanded="true"] .menu-icon span:nth-child(2) {
+          top: 12px;
+          width: 22px;
+          transform: translateX(-50%) rotate(-45deg);
+        }
+        .menu-btn[aria-expanded="true"] .menu-icon span:nth-child(3) {
+          top: 12px;
+          width: 0;
+          transform: translateX(-50%);
+        }
+
+        /* Menu */
+        .menu-panel {
+          position: fixed;
+          top: var(--header-h);
+          right: 12px;
+          width: min(260px, calc(100vw - 24px));
+          background: rgba(255,255,255,0.96);
+          border: 1px solid rgba(0,0,0,0.25);
+          border-radius: 0;
+          padding: 8px;
+          z-index: 999;
+
+          box-shadow:
+            0 1px 0 rgba(0,0,0,0.20),
+            1px 2px 0 rgba(0,0,0,0.15),
+            2px 4px 0 rgba(0,0,0,0.08),
+            3px 6px 0 rgba(0,0,0,0.04);
+
+          transform: translateY(-10px);
+          opacity: 0;
+          pointer-events: none;
+          transition: transform 180ms ease, opacity 180ms ease;
+        }
+        .menu-panel[data-open="true"] {
+          transform: translateY(0);
+          opacity: 1;
+          pointer-events: auto;
+        }
+        .menu-panel a {
+          display: block;
+          padding: 12px;
+          border-radius: 0;
+          text-decoration: none;
+          color: var(--text);
+          font-size: 14px;
+        }
+        .menu-panel a:hover { background: rgba(0,0,0,0.05); }
+
+        .backdrop {
+          position: fixed;
+          inset: 0;
+          display: none;
+          z-index: 998;
+        }
+        .backdrop[data-open="true"] { display: block; }
+
+        /* Sections */
+        .spacer {
+          min-height: 40vh;
+          padding: 48px 18px;
+          display: grid;
+          place-items: center;
+          color: var(--muted);
+        }
+
+        .sequence-section {
+          position: relative;
+          height: 140vh; /* shorter hero for this page */
+          background: var(--bg);
+        }
+
+        .sequence-sticky {
+          position: sticky;
+          top: var(--header-h);
+          height: calc(100dvh - var(--header-h));
+          overflow: hidden;
+          display: grid;
+          place-items: center;
+          padding: 24px 18px;
+        }
+
+        .hero-box{
+          width: min(900px, 92vw);
+          border: 1px solid rgba(0,0,0,0.25);
+          background: #fff;
+          padding: 22px 18px;
+          box-shadow:
+            0 1px 0 rgba(0,0,0,0.20),
+            1px 2px 0 rgba(0,0,0,0.15),
+            2px 4px 0 rgba(0,0,0,0.08),
+            3px 6px 0 rgba(0,0,0,0.04);
+        }
+
+        .hero-kicker{ color: #666; font-size: 13px; margin-bottom: 10px; }
+        .hero-title{ color: #111; font-size: 30px; font-weight: 700; margin: 0 0 10px; }
+        .hero-sub{ color: #333; line-height: 1.5; margin: 0; }
+
+        @supports not (height: 100dvh) {
+          .sequence-sticky {
+            height: calc(100vh - var(--header-h));
+          }
+        }
+
+        /* Form (kept for consistent styling if you add a form later) */
+        .contact-grid{
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 12px;
+        }
+
+        .field label{
+          display: block;
+          font-size: 13px;
+          margin: 0 0 6px;
+          color: #333;
+        }
+
+        .field input, .field textarea{
+          width: 100%;
+          border: 1px solid rgba(0,0,0,0.25);
+          border-radius: 0;
+          padding: 10px 12px;
+          font: inherit;
+          background: #fff;
+        }
+
+        .field textarea{
+          min-height: 120px;
+          resize: vertical;
+        }
+
+        .contact-actions{
+          display: flex;
+          justify-content: center;
+          margin-top: 16px;
+        }
+
+        .btn{
+          border: 0;
+          border-radius: 0;
+          padding: 10px 14px;
+          background: #111;
+          color: #fff;
+          cursor: pointer;
+          font-weight: 600;
+        }
+
+        .btn[disabled]{
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+<header class="site-header" id="siteHeader">
+    <div class="site-title">Sharing My Faith</div>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menuPanel" aria-label="Open menu">
+    <span class="menu-icon" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </span>
+    </button>
+</header>
+
+<div class="backdrop" id="menuBackdrop" data-open="false" aria-hidden="true"></div>
+<nav class="menu-panel" id="menuPanel" data-open="false">
+    <a href="./index.html#sequenceSection">Home</a>
+    <a href="#making">Making a Victorious Cross</a>
+    <a href="#ordering">Ordering</a>
+    <a href="#how-to-fish">How to Fish</a>
+</nav>
+
+<section class="sequence-section" id="top">
+    <div class="sequence-sticky">
+        <div class="hero-box">
+            <div class="hero-kicker">Practical help & encouragement</div>
+            <h1 class="hero-title">Sharing My Faith</h1>
+            <p class="hero-sub">
+                Placeholder intro text. This page can explain practical ways to use “The Victorious Cross” tract,
+                how to make one, how to order, and simple guidance for starting conversations.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="spacer" id="making">
+    <div style="max-width:720px; text-align:center; line-height:1.5;">
+        <div style="font-weight:600; margin-bottom:10px;">Making a Victorious Cross</div>
+        <p style="margin:0;">
+            Placeholder text. Describe materials, printing, cutting, folding, and how to assemble.
+            You can also add tips for durability (card stock, scoring fold lines, etc.) and a short checklist.
+        </p>
+    </div>
+</section>
+
+<section class="spacer" id="ordering">
+    <div style="max-width:720px; text-align:center; line-height:1.5;">
+        <div style="font-weight:600; margin-bottom:10px;">Ordering</div>
+        <p style="margin:0;">
+            Placeholder text. Explain how to order copies, delivery expectations, costs (if applicable),
+            and what to do if someone wants them in bulk for an event or church.
+        </p>
+    </div>
+</section>
+
+<section class="spacer" id="how-to-fish">
+    <div style="max-width:720px; text-align:center; line-height:1.5;">
+        <div style="font-weight:600; margin-bottom:10px;">How to Fish</div>
+        <p style="margin:0;">
+            Placeholder text. Offer practical suggestions for starting conversations, listening well,
+            asking questions, and pointing to the message of the gospel with gentleness and clarity.
+        </p>
+    </div>
+</section>
+
+<footer style="padding:40px 0; text-align:center; color:#666;">
+    <div style="display:flex; justify-content:center; gap:18px; margin-bottom:10px;">
+        <a href="https://twitter.com/YOUR_HANDLE" target="_blank" rel="noopener" aria-label="X / Twitter" style="color:#111; font-size:22px;">
+            <i class="lab la-twitter"></i>
+        </a>
+        <a href="https://instagram.com/YOUR_HANDLE" target="_blank" rel="noopener" aria-label="Instagram" style="color:#111; font-size:22px;">
+            <i class="lab la-instagram"></i>
+        </a>
+        <a href="https://youtube.com/YOUR_CHANNEL" target="_blank" rel="noopener" aria-label="YouTube" style="color:#111; font-size:22px;">
+            <i class="lab la-youtube"></i>
+        </a>
+    </div>
+    <div style="font-size:12px;">
+        © <span id="year"></span> The Victorious Cross
+    </div>
+</footer>
+
+<script>
+    // Menu open/close (same behavior as your main page)
+    const menuBtn = document.getElementById("menuBtn");
+    const menuPanel = document.getElementById("menuPanel");
+    const menuBackdrop = document.getElementById("menuBackdrop");
+
+    function setMenuOpen(open) {
+      menuBtn.setAttribute("aria-expanded", String(open));
+      menuPanel.dataset.open = String(open);
+      menuBackdrop.dataset.open = String(open);
+      menuBtn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    }
+
+    menuBtn.addEventListener("click", () => {
+      const open = menuBtn.getAttribute("aria-expanded") === "true";
+      setMenuOpen(!open);
+    });
+
+    menuBackdrop.addEventListener("click", () => setMenuOpen(false));
+    window.addEventListener("keydown", (e) => { if (e.key === "Escape") setMenuOpen(false); });
+    menuPanel.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setMenuOpen(false)));
+
+    // Year
+    document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
