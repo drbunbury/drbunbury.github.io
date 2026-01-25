@@ -300,6 +300,7 @@
       margin: 0 auto;
     }
 
+    /* default: image + content */
     .resource-card{
       display: grid;
       grid-template-columns: var(--resource-img-h) 1fr; /* image column matches height */
@@ -319,12 +320,23 @@
         3px 6px 0 rgba(0,0,0,0.04);
     }
 
+    /* no image: content only, same padding/border/shadow */
+    .resource-card.resource-card--noimg{
+      grid-template-columns: 1fr;
+    }
+
+    /* image box */
     .resource-thumb{
       width: var(--resource-img-h);
       height: var(--resource-img-h);
       object-fit: contain;   /* keep logo intact */
       display: block;
       background: #fff;
+    }
+
+    /* if the <img> exists but fails to load, hide it */
+    .resource-thumb[hidden]{
+      display: none;
     }
 
     .resource-title{
@@ -345,8 +357,9 @@
       font-size: 14px;
     }
 
+    /* Mobile */
     @media (max-width: 560px){
-      :root{ --resource-img-h: 120px; } /* smaller on phones */
+      :root{ --resource-img-h: 120px; }
       .resource-card{
         grid-template-columns: 1fr;
         text-align: center;
@@ -445,54 +458,60 @@
   </div>
 </section>
 
-<section class="spacer" id="resources">
-  <div style="text-align:center; width:100%;">
-    <div style="font-weight:600; margin-bottom:12px;">Resources</div>
+<div class="resources-list">
 
-    <!-- Optional: override size for just this section -->
-    <!-- <div style="--resource-img-h: 200px;"> -->
-    <div class="resources-list">
-
-      <div class="resource-card">
-        <img
-                class="resource-thumb"
-                src="./images/SASRA-Logo-200.png"
-                alt="SASRA logo"
-                loading="lazy"
-        />
-        <div>
-          <div class="resource-title">
-            <a href="https://www.sasra.org.uk" target="_blank" rel="noopener">SASRA</a>
-          </div>
-          <p class="resource-desc">
-            SASRA is an organisation that supports the British military through chaplaincy,
-            pastoral care, and practical help for service personnel and their families.
-          </p>
-        </div>
+  <div class="resource-card">
+    <img
+            class="resource-thumb"
+            src="./images/SASRA-Logo-200.png"
+            alt="SASRA logo"
+            loading="lazy"
+            onerror="this.hidden=true; this.closest('.resource-card')?.classList.add('resource-card--noimg');"
+    />
+    <div>
+      <div class="resource-title">
+        <a href="https://www.sasra.org.uk" target="_blank" rel="noopener">SASRA</a>
       </div>
-
-      <div class="resource-card">
-        <img
-                class="resource-thumb"
-                src="./images/bibleproject.png"
-                alt="The Bible Project logo"
-                loading="lazy"
-        />
-        <div>
-          <div class="resource-title">
-            <a href="https://bibleproject.com" target="_blank" rel="noopener">The Bible Project</a>
-          </div>
-          <p class="resource-desc">
-            The Bible Project provides short videos and study resources that help explain the Bible’s
-            story, themes, and how the books connect.
-          </p>
-        </div>
-      </div>
-
+      <p class="resource-desc">
+        SASRA is an organisation that supports the British military through chaplaincy,
+        pastoral care, and practical help for service personnel and their families.
+      </p>
     </div>
-    <!-- </div> -->
   </div>
-</section>
+
+  <div class="resource-card">
+    <img
+            class="resource-thumb"
+            src="./images/bibleproject.png"
+            alt="The Bible Project logo"
+            loading="lazy"
+            onerror="this.hidden=true; this.closest('.resource-card')?.classList.add('resource-card--noimg');"
+    />
+    <div>
+      <div class="resource-title">
+        <a href="https://bibleproject.com" target="_blank" rel="noopener">The Bible Project</a>
+      </div>
+      <p class="resource-desc">
+        The Bible Project provides short videos and study resources that help explain the Bible’s
+        story, themes, and how the books connect.
+      </p>
+    </div>
+  </div>
+
+  <!-- Example with no image at all -->
+  <div class="resource-card resource-card--noimg">
+    <div>
+      <div class="resource-title">
+        <a href="#" target="_blank" rel="noopener">Another Resource (No Image)</a>
+      </div>
+      <p class="resource-desc">
+        Placeholder description. This card has no image and automatically uses a one-column layout
+        while keeping the same border, padding, and shadow style.
+      </p>
+    </div>
+  </div>
+
+</div>
 
 <section class="spacer" id="about">
   <div style="max-width:720px; text-align:center; line-height:1.5;">
