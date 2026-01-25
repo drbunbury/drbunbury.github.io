@@ -31,13 +31,13 @@ const READY_THRESHOLD = frameCount;
 const weights = Array.from({ length: frameCount }, () => 1);
 // Example dwell (edit/remove as needed)
 weights[0] = 10;
-weights[13] = 10;
-weights[25] = 10;
-weights[37] = 10;
-weights[50] = 10;
-weights[62] = 10;
-weights[74] = 10;
-weights[83] = 10;
+weights[12] = 10;
+weights[24] = 10;
+weights[36] = 10;
+weights[49] = 10;
+weights[61] = 10;
+weights[73] = 10;
+weights[82] = 10;
 
 // DOM
 const header = document.getElementById("siteHeader");
@@ -75,6 +75,57 @@ menuPanel.querySelectorAll("a").forEach((a) => a.addEventListener("click", () =>
 
 // Utils
 function clamp(x, a, b) { return Math.min(b, Math.max(a, x)); }
+
+function drawDebugFrameLabel(frameIndex) {
+  const dpr = window.devicePixelRatio || 1;
+
+  ctx.save();
+  ctx.setTransform(1, 0, 0, 1, 0, 0); // text in canvas pixel coords
+
+  const text = `Frame ${frameIndex + 1} / ${frameCount}`;
+
+  // size scales with DPR so it stays readable
+  const fontPx = Math.max(14, Math.round(16 * dpr));
+  ctx.font = `600 ${fontPx}px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+
+  // measure for a background pill
+  const metrics = ctx.measureText(text);
+  const padX = Math.round(10 * dpr);
+  const padY = Math.round(6 * dpr);
+  const w = Math.ceil(metrics.width + padX * 2);
+  const h = Math.ceil(fontPx + padY * 2);
+
+  const x = Math.round(canvas.width / 2);
+  const y = Math.round(canvas.height / 2);
+
+  // background
+  ctx.fillStyle = "rgba(255,255,255,0.75)";
+  ctx.strokeStyle = "rgba(0,0,0,0.35)";
+  ctx.lineWidth = Math.max(1, Math.round(1 * dpr));
+
+  // rounded rect
+  const r = Math.round(10 * dpr);
+  const left = x - w / 2;
+  const top = y - h / 2;
+
+  ctx.beginPath();
+  ctx.moveTo(left + r, top);
+  ctx.arcTo(left + w, top, left + w, top + h, r);
+  ctx.arcTo(left + w, top + h, left, top + h, r);
+  ctx.arcTo(left, top + h, left, top, r);
+  ctx.arcTo(left, top, left + w, top, r);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  // text
+  ctx.fillStyle = "#111";
+  ctx.fillText(text, x, y);
+
+  ctx.restore();
+}
 
 function frameUrl(i) {
   const n = String(i + 1).padStart(padTo, "0");
@@ -151,7 +202,7 @@ async function decodeFrame(index) {
 }
 
 // Draw: centered, no scaling, crop overflow
-function drawBitmapCenteredNoScaleCrop(bitmap) {
+function drawBitmapCenteredNoScaleCrop(bitmap, frameIndex) {
   const dpr = window.devicePixelRatio || 1;
 
   const cssW = canvas.clientWidth || window.innerWidth;
@@ -224,6 +275,10 @@ function drawBitmapCenteredNoScaleCrop(bitmap) {
     sx, sy, sw, sh,   // source rect in bitmap pixels
     visX0, visY0, visW, visH // dest rect in canvas device pixels
   );
+    // Debug: show current frame in the centre
+    if (typeof frameIndex === "number") {
+      drawDebugFrameLabel(frameIndex);
+    }
 }
 
 // Scroll handling
@@ -244,7 +299,7 @@ function onScroll() {
     try {
       const frame = frameFromProgress(computeProgress());
       const bitmap = await decodeFrame(frame);
-      if (bitmap) drawBitmapCenteredNoScaleCrop(bitmap);
+      if (bitmap) drawBitmapCenteredNoScaleCrop(bitmap, frame);
     } catch (e) {
       console.error(e);
       showError(String(e));
@@ -262,7 +317,7 @@ window.addEventListener("resize", onScroll);
   try {
     const first = await decodeFrame(0);
     if (!first) throw new Error("Failed to decode first frame.");
-    drawBitmapCenteredNoScaleCrop(first);
+    drawBitmapCenteredNoScaleCrop(first, 0);
 
     for (let i = 1; i < frameCount; i++) {
       if (i % 10 === 0) await new Promise(requestAnimationFrame);
