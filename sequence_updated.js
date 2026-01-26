@@ -8,16 +8,16 @@ const frameCount = 83;
 // Expected files:
 //   /images/webp/product_0001.webp ... product_0100.webp
 const baseUrl = "/images/webpbw/";
-const filePrefix = "VCBW";
+const filePrefix = "VC_BW";
 const padTo = 4;
 const ext = "webp";
 
 // Global scale (applies on all devices)
-const baseScale = 0.5; // 80% everywhere (tweak)
+const baseScale = 0.8; // 80% everywhere (tweak)
 
 // Mobile scaling
 const mobileMaxCssWidth = 520;   // treat <= this as "mobile"
-const mobileScale = 0.5;        // 65% size on mobile (tweak)
+const mobileScale = 0.8;        // 65% size on mobile (tweak)
 
 // Right-edge anchor offset from canvas center
 // Use ONE of these:
