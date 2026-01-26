@@ -25,7 +25,7 @@ const rightEdgeOffsetPx = null;     // centered by default
 const rightEdgeOffsetRatio = null;  // optional alternative mode
 
 // Hide overlay once everything is decoded
-const READY_THRESHOLD = frameCount/2;
+const READY_THRESHOLD = frameCount;
 
 // Optional dwell weights (0-indexed)
 const weights = Array.from({ length: frameCount }, () => 1);
