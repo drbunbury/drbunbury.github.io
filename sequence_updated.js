@@ -76,40 +76,39 @@ menuPanel.querySelectorAll("a").forEach((a) => a.addEventListener("click", () =>
 // Utils
 function clamp(x, a, b) { return Math.min(b, Math.max(a, x)); }
 
-function drawDebugFrameLabel(frameIndex) {
+function drawDebugFrameLabel(frameIndex, dx, dy, dw, dh) {
   const dpr = window.devicePixelRatio || 1;
 
   ctx.save();
-  ctx.setTransform(1, 0, 0, 1, 0, 0); // text in canvas pixel coords
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
 
   const text = `Frame ${frameIndex + 1} / ${frameCount}`;
 
-  // size scales with DPR so it stays readable
   const fontPx = Math.max(14, Math.round(16 * dpr));
   ctx.font = `600 ${fontPx}px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial`;
   ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
+  ctx.textBaseline = "bottom";
 
-  // measure for a background pill
   const metrics = ctx.measureText(text);
   const padX = Math.round(10 * dpr);
   const padY = Math.round(6 * dpr);
+
   const w = Math.ceil(metrics.width + padX * 2);
   const h = Math.ceil(fontPx + padY * 2);
 
-  const x = Math.round(canvas.width / 2);
-  const y = Math.round(canvas.height / 2);
+  const x = Math.round(dx + dw / 2);
+  const margin = Math.round(12 * dpr);
+  const y = Math.round(dy + dh - margin);
+
+  const left = x - w / 2;
+  const top = y - h;
 
   // background
   ctx.fillStyle = "rgba(255,255,255,0.75)";
   ctx.strokeStyle = "rgba(0,0,0,0.35)";
   ctx.lineWidth = Math.max(1, Math.round(1 * dpr));
 
-  // rounded rect
-  const r = Math.round(10 * dpr);
-  const left = x - w / 2;
-  const top = y - h / 2;
-
+  const r = Math.round(8 * dpr);
   ctx.beginPath();
   ctx.moveTo(left + r, top);
   ctx.arcTo(left + w, top, left + w, top + h, r);
@@ -120,9 +119,8 @@ function drawDebugFrameLabel(frameIndex) {
   ctx.fill();
   ctx.stroke();
 
-  // text
   ctx.fillStyle = "#111";
-  ctx.fillText(text, x, y);
+  ctx.fillText(text, x, y - padY);
 
   ctx.restore();
 }
