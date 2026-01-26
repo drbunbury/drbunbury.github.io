@@ -13,11 +13,11 @@ const padTo = 4;
 const ext = "webp";
 
 // Global scale (applies on all devices)
-const baseScale = 0.9; // 80% everywhere (tweak)
+const baseScale = 0.5; // 80% everywhere (tweak)
 
 // Mobile scaling
 const mobileMaxCssWidth = 520;   // treat <= this as "mobile"
-const mobileScale = 0.9;        // 65% size on mobile (tweak)
+const mobileScale = 0.;        // 65% size on mobile (tweak)
 
 // Right-edge anchor offset from canvas center
 // Use ONE of these:
@@ -25,11 +25,12 @@ const rightEdgeOffsetPx = null;     // centered by default
 const rightEdgeOffsetRatio = null;  // optional alternative mode
 
 // Hide overlay once everything is decoded
-const READY_THRESHOLD = frameCount;
+const READY_THRESHOLD = frameCount/2;
 
 // Optional dwell weights (0-indexed)
 const weights = Array.from({ length: frameCount }, () => 1);
-// Example dwell (edit/remove as needed)
+
+// Dwell at each 'open' frame
 weights[0] = 24;
 weights[12] = 24;
 weights[24] = 24;
