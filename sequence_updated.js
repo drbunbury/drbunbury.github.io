@@ -1,31 +1,36 @@
 // sequence.js
 // Fixes:
 // 1) Menu open/close restored
-// 2) Loads frames from absolute /images/webp/ (WebP only)
+// 2) Loads frames from absolute folders (WebP only)
+// 3) Loads BW set on mobile OR slow connection (saves bandwidth)
 
+// -------------------- CONFIG --------------------
 const frameCount = 83;
 
-// Expected files:
-//   /images/webp/product_0001.webp ... product_0100.webp
-const baseUrl = "/images/webp/";
-const filePrefix = "VC";
+// Default (colour) set
+const baseUrlColor = "/images/webp/";
+const filePrefixColor = "VC";
+
+// BW set (smaller / faster)
+const baseUrlBW = "/images/webp_bw/";
+const filePrefixBW = "VC_BW";
+
 const padTo = 4;
 const ext = "webp";
 
-// Global scale (applies on all devices)
-const baseScale = 0.5; // 80% everywhere (tweak)
+// Global scale
+const baseScale = 0.5;
 
 // Mobile scaling
-const mobileMaxCssWidth = 520;   // treat <= this as "mobile"
-const mobileScale = 0.5;        // 65% size on mobile (tweak)
+const mobileMaxCssWidth = 520;
+const mobileScale = 0.5;
 
 // Right-edge anchor offset from canvas center
-// Use ONE of these:
-const rightEdgeOffsetPx = null;     // centered by default
-const rightEdgeOffsetRatio = null;  // optional alternative mode
+const rightEdgeOffsetPx = null;
+const rightEdgeOffsetRatio = null;
 
 // Hide overlay once everything is decoded
-const READY_THRESHOLD = frameCount/2;
+const READY_THRESHOLD = frameCount / 2;
 
 // Optional dwell weights (0-indexed)
 const weights = Array.from({ length: frameCount }, () => 1);
@@ -40,7 +45,7 @@ weights[61] = 24;
 weights[73] = 24;
 weights[82] = 24;
 
-// DOM
+// -------------------- DOM --------------------
 const header = document.getElementById("siteHeader");
 const section = document.getElementById("sequenceSection");
 const canvas = document.getElementById("sequenceCanvas");
@@ -74,8 +79,32 @@ menuBackdrop.addEventListener("click", () => setMenuOpen(false));
 window.addEventListener("keydown", (e) => { if (e.key === "Escape") setMenuOpen(false); });
 menuPanel.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setMenuOpen(false)));
 
-// Utils
+// -------------------- Utils --------------------
 function clamp(x, a, b) { return Math.min(b, Math.max(a, x)); }
+
+// Decide BW vs colour ONCE at load time
+function shouldUseBW() {
+  const isMobile = (window.innerWidth || canvas?.clientWidth || 9999) <= mobileMaxCssWidth;
+
+  const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  const saveData = !!conn?.saveData;
+
+  // effectiveType can be: 'slow-2g','2g','3g','4g' (not supported everywhere)
+  const effectiveType = conn?.effectiveType || "";
+  const slowType = ["slow-2g", "2g", "3g"].includes(effectiveType);
+
+  // downlink is Mbps (rough signal; also not supported everywhere)
+  const downlink = typeof conn?.downlink === "number" ? conn.downlink : null;
+  const lowDownlink = downlink !== null && downlink <= 1.5;
+
+  return isMobile || saveData || slowType || lowDownlink;
+}
+
+const useBW = shouldUseBW();
+
+// Active set (picked once)
+const baseUrl = useBW ? baseUrlBW : baseUrlColor;
+const filePrefix = useBW ? filePrefixBW : filePrefixColor;
 
 function drawDebugFrameLabel(frameIndex, dx, dy, dw, dh) {
   const dpr = window.devicePixelRatio || 1;
@@ -83,7 +112,8 @@ function drawDebugFrameLabel(frameIndex, dx, dy, dw, dh) {
   ctx.save();
   ctx.setTransform(1, 0, 0, 1, 0, 0);
 
-  const text = `Frame ${frameIndex + 1} / ${frameCount}`;
+  const setLabel = useBW ? "BW" : "COLOR";
+  const text = `${setLabel} — Frame ${frameIndex + 1} / ${frameCount}`;
 
   const fontPx = Math.max(14, Math.round(16 * dpr));
   ctx.font = `600 ${fontPx}px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial`;
@@ -104,7 +134,6 @@ function drawDebugFrameLabel(frameIndex, dx, dy, dw, dh) {
   const left = x - w / 2;
   const top = y - h;
 
-  // background
   ctx.fillStyle = "rgba(255,255,255,0.75)";
   ctx.strokeStyle = "rgba(0,0,0,0.35)";
   ctx.lineWidth = Math.max(1, Math.round(1 * dpr));
@@ -131,7 +160,7 @@ function frameUrl(i) {
   return `${baseUrl}${filePrefix}${n}.${ext}`;
 }
 
-// Weighted dwell timeline
+// -------------------- Weighted dwell timeline --------------------
 let totalWeight = 0;
 const cumulative = [];
 for (let i = 0; i < frameCount; i++) {
@@ -150,7 +179,7 @@ function frameFromProgress(progress01) {
   return lo;
 }
 
-// Cache/decode
+// -------------------- Cache/decode --------------------
 const cache = new Map();
 const inFlight = new Set();
 const decodedSet = new Set();
@@ -172,7 +201,7 @@ function showError(message) {
   if (errorText) {
     errorText.innerHTML =
       `${message}<br><br>` +
-      `Expected files like <code>${baseUrl}${filePrefix}0001.${ext}</code>.<br>`
+      `Expected files like <code>${baseUrl}${filePrefix}0001.${ext}</code>.<br>`;
   }
   if (errorOverlay) errorOverlay.dataset.show = "true";
 }
@@ -200,7 +229,7 @@ async function decodeFrame(index) {
   }
 }
 
-// Draw: centered, no scaling, crop overflow
+// -------------------- Draw: centered, crop overflow --------------------
 function drawBitmapCenteredNoScaleCrop(bitmap, frameIndex) {
   const dpr = window.devicePixelRatio || 1;
 
@@ -218,42 +247,31 @@ function drawBitmapCenteredNoScaleCrop(bitmap, frameIndex) {
   ctx.fillStyle = "#fff";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    const isMobile = (window.innerWidth || canvas.clientWidth) <= mobileMaxCssWidth;
+  const isMobile = (window.innerWidth || canvas.clientWidth) <= mobileMaxCssWidth;
 
-    // Base + device scaling
-    const deviceScale = isMobile ? mobileScale : 1;
-    const desiredScale = baseScale * deviceScale;
+  // Base + device scaling
+  const deviceScale = isMobile ? mobileScale : 1;
+  const desiredScale = baseScale * deviceScale;
 
-    // Maximum allowed height (80% of visible canvas)
-    const maxImageHeight = canvas.height * 0.95;
+  const maxImageHeight = canvas.height * 0.95;
+  const heightFitScale = maxImageHeight / (bitmap.height * dpr);
+  const scale = Math.min(desiredScale, heightFitScale);
 
-    // Scale needed to fit height constraint
-    const heightFitScale = maxImageHeight / (bitmap.height * dpr);
+  const dw = bitmap.width * dpr * scale;
+  const dh = bitmap.height * dpr * scale;
 
-    // Final scale = smallest valid scale
-    const scale = Math.min(desiredScale, heightFitScale);
+  let dx = (canvas.width - dw) / 2;
+  const centerX = canvas.width / 2;
 
-    // Final draw size
-    const dw = bitmap.width * dpr * scale;
-    const dh = bitmap.height * dpr * scale;
+  if (typeof rightEdgeOffsetPx === "number") {
+    const offset = rightEdgeOffsetPx * dpr * scale;
+    dx = (centerX + offset) - dw;
+  } else if (typeof rightEdgeOffsetRatio === "number") {
+    const offset = dw * rightEdgeOffsetRatio;
+    dx = (centerX + offset) - dw;
+  }
 
-    // Horizontal placement:
-    // Default: centered.
-    // If rightEdgeOffsetPx/Ratio is provided: anchor RIGHT edge relative to canvas center.
-    let dx = (canvas.width - dw) / 2;
-
-    const centerX = canvas.width / 2;
-
-    if (typeof rightEdgeOffsetPx === "number") {
-      const offset = rightEdgeOffsetPx * dpr * scale; // scaled so it behaves consistently
-      dx = (centerX + offset) - dw;
-    } else if (typeof rightEdgeOffsetRatio === "number") {
-      const offset = dw * rightEdgeOffsetRatio;
-      dx = (centerX + offset) - dw;
-    }
-
-    // keep vertical centering
-    const dy = (canvas.height - dh) / 2;
+  const dy = (canvas.height - dh) / 2;
 
   const visX0 = Math.max(0, dx);
   const visY0 = Math.max(0, dy);
@@ -262,25 +280,20 @@ function drawBitmapCenteredNoScaleCrop(bitmap, frameIndex) {
 
   if (visW <= 0 || visH <= 0) return;
 
-  // Convert visible device-pixel region back into source (bitmap) pixels.
-  // We need to undo BOTH dpr and scale.
   const sx = (visX0 - dx) / (dpr * scale);
   const sy = (visY0 - dy) / (dpr * scale);
   const sw = visW / (dpr * scale);
   const sh = visH / (dpr * scale);
 
-  ctx.drawImage(
-    bitmap,
-    sx, sy, sw, sh,   // source rect in bitmap pixels
-    visX0, visY0, visW, visH // dest rect in canvas device pixels
-  );
-    // Debug: show current frame in the centre
-    if (typeof frameIndex === "number") {
-      drawDebugFrameLabel(frameIndex);
-    }
+  ctx.drawImage(bitmap, sx, sy, sw, sh, visX0, visY0, visW, visH);
+
+  // Debug label (bottom-centre of the drawn image)
+  if (typeof frameIndex === "number") {
+    drawDebugFrameLabel(frameIndex, dx, dy, dw, dh);
+  }
 }
 
-// Scroll handling
+// -------------------- Scroll handling --------------------
 function computeProgress() {
   const rect = section.getBoundingClientRect();
   const headerH = header?.getBoundingClientRect().height ?? 0;
@@ -311,7 +324,7 @@ function onScroll() {
 window.addEventListener("scroll", onScroll, { passive: true });
 window.addEventListener("resize", onScroll);
 
-// Init
+// -------------------- Init --------------------
 (async function init() {
   try {
     const first = await decodeFrame(0);
