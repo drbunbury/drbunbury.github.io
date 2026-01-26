@@ -7,7 +7,7 @@ const frameCount = 83;
 
 // Expected files:
 //   /images/webp/product_0001.webp ... product_0100.webp
-const baseUrl = "/images/webpbw/";
+const baseUrl = "/images/webp_bw/";
 const filePrefix = "VC_BW";
 const padTo = 4;
 const ext = "webp";
