@@ -52,6 +52,117 @@ const pctEl = document.getElementById("loadingPct");
 const errorOverlay = document.getElementById("errorOverlay");
 const errorText = document.getElementById("errorText");
 
+// -------------------- Scroll lock --------------------
+let scrollLockY = 0;
+
+function lockScroll() {
+  scrollLockY = window.scrollY || window.pageYOffset || 0;
+
+  // Prevent layout jump by fixing the body in place
+  document.documentElement.style.overflow = "hidden";
+  document.body.style.overflow = "hidden";
+  document.body.style.position = "fixed";
+  document.body.style.width = "100%";
+  document.body.style.top = `-${scrollLockY}px`;
+
+  // Extra safety: block wheel/touch/keys that scroll
+  window.addEventListener("wheel", preventScroll, { passive: false });
+  window.addEventListener("touchmove", preventScroll, { passive: false });
+  window.addEventListener("keydown", preventScrollKeys, { passive: false });
+}
+
+function unlockScroll() {
+  document.documentElement.style.overflow = "";
+  document.body.style.overflow = "";
+  document.body.style.position = "";
+  document.body.style.width = "";
+  const top = document.body.style.top;
+  document.body.style.top = "";
+
+  window.removeEventListener("wheel", preventScroll);
+  window.removeEventListener("touchmove", preventScroll);
+  window.removeEventListener("keydown", preventScrollKeys);
+
+  // Restore the scroll position we froze at
+  const y = top ? Math.abs(parseInt(top, 10)) : scrollLockY;
+  window.scrollTo(0, y);
+}
+
+function preventScroll(e) {
+  e.preventDefault();
+}
+
+function preventScrollKeys(e) {
+  // Space, PageUp/Down, End, Home, arrows
+  const keys = [" ", "PageUp", "PageDown", "End", "Home", "ArrowUp", "ArrowDown"];
+  if (keys.includes(e.key)) e.preventDefault();
+}
+
+// -------------------- Set selection (measured probe) --------------------
+function connHintsSaySlow() {
+  const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  if (!conn) return false;
+
+  const saveData = !!conn.saveData;
+  const effectiveType = conn.effectiveType || "";
+  const slowType = ["slow-2g", "2g"].includes(effectiveType); // be stricter here
+  const downlink = typeof conn.downlink === "number" ? conn.downlink : null;
+  const rtt = typeof conn.rtt === "number" ? conn.rtt : null;
+
+  // Treat these as strong hints, not gospel
+  const lowDownlink = downlink !== null && downlink <= 1.0;
+  const highRtt = rtt !== null && rtt >= 450;
+
+  return saveData || slowType || lowDownlink || highRtt;
+}
+
+async function timedFetch(url, { timeoutMs = 2000, cache = "no-store" } = {}) {
+  const controller = new AbortController();
+  const t0 = performance.now();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const resp = await fetch(url, { cache, signal: controller.signal });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const blob = await resp.blob();
+    const t1 = performance.now();
+    return { ms: t1 - t0, bytes: blob.size };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function chooseBWvsColor() {
+  // 1) strong user/device hint
+  if (connHintsSaySlow()) return true;
+
+  // 2) If the user explicitly prefers reduced data (nice extra signal)
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-data: reduce)").matches) {
+    return true;
+  }
+
+  // 3) Real probe: try fetching COLOR frame 1 quickly.
+  // If it’s slow, prefer BW.
+  const colorFirstUrl = `${baseUrlColor}${filePrefixColor}${String(1).padStart(padTo, "0")}.${ext}`;
+
+  try {
+    const { ms, bytes } = await timedFetch(colorFirstUrl, { timeoutMs: 2200, cache: "no-store" });
+
+    // Estimate Mbps from this sample
+    const mbps = (bytes * 8) / (ms / 1000) / 1_000_000;
+
+    // Thresholds: tune for your content.
+    // If the first frame is taking ages or throughput is low, go BW.
+    const tooSlowTime = ms > 1200;     // >1.2s for one frame feels sluggish
+    const tooSlowMbps = mbps < 3.0;    // <3 Mbps is often “painful” for heavy sequences
+
+    return tooSlowTime || tooSlowMbps;
+  } catch {
+    // Probe failed or timed out => safer to go BW
+    return true;
+  }
+}
+
 // -------------------- Menu --------------------
 const menuBtn = document.getElementById("menuBtn");
 const menuPanel = document.getElementById("menuPanel");
@@ -97,11 +208,9 @@ function shouldUseBW() {
   return saveData || slowType || lowDownlink || highRtt;
 }
 
-const useBW = shouldUseBW();
-
-// Active set (picked once)
-const baseUrl = useBW ? baseUrlBW : baseUrlColor;
-const filePrefix = useBW ? filePrefixBW : filePrefixColor;
+let useBW = false;
+let baseUrl = baseUrlColor;
+let filePrefix = filePrefixColor;
 
 function drawDebugFrameLabel(frameIndex, dx, dy, dw, dh) {
   const dpr = window.devicePixelRatio || 1;
@@ -187,6 +296,8 @@ function updateLoadingUI() {
   pctEl.textContent = `${pct}%`;
 
   if (decodedSet.size >= READY_THRESHOLD && overlay) {
+    unlockScroll();
+
     overlay.style.transition = "opacity 250ms ease";
     overlay.style.opacity = "0";
     setTimeout(() => overlay.remove(), 260);
@@ -285,9 +396,9 @@ function drawBitmapCenteredNoScaleCrop(bitmap, frameIndex) {
   ctx.drawImage(bitmap, sx, sy, sw, sh, visX0, visY0, visW, visH);
 
   // Debug label (bottom-centre of drawn image)
-  if (typeof frameIndex === "number") {
-    drawDebugFrameLabel(frameIndex, dx, dy, dw, dh);
-  }
+  //if (typeof frameIndex === "number") {
+  //  drawDebugFrameLabel(frameIndex, dx, dy, dw, dh);
+  //}
 }
 
 // -------------------- Scroll handling --------------------
@@ -323,9 +434,13 @@ window.addEventListener("resize", onScroll);
 
 // -------------------- Init --------------------
 (async function init() {
+  lockScroll();
   try {
-    // Helpful debug in console:
-    console.log("Sequence set:", useBW ? "BW (slow connection)" : "COLOR (fast connection)");
+    useBW = await chooseBWvsColor();
+    baseUrl = useBW ? baseUrlBW : baseUrlColor;
+    filePrefix = useBW ? filePrefixBW : filePrefixColor;
+
+    console.log("Sequence set:", useBW ? "BW" : "COLOR");
     console.log("First frame URL:", frameUrl(0));
 
     const first = await decodeFrame(0);
