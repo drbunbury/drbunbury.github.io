@@ -459,11 +459,24 @@
 
     <div id="loadingOverlay">
       <div class="loader-wrap" aria-hidden="true">
-        <svg class="cross-svg" viewBox="0 0 100 100" role="img" aria-label="Loading">
+        <svg class="cross-svg" viewBox="0 0 100 120" role="img" aria-label="Loading">
+          <!-- Background outlines (static) -->
           <path id="crossBg"
-                d="M45 5 H55 V45 H95 V55 H55 V95 H45 V55 H5 V45 H45 Z"/>
+                d="
+          M30 6  L50 26 L70 6
+          M34 6  L50 22 L66 6
+          M36 26 H64 V34 H36 Z
+          M46 34 H54 V48 H68 V56 H54 V70 H46 V56 H32 V48 H46 Z
+        "/>
+
+          <!-- Trace (animated) - same geometry so it draws over the background -->
           <path id="crossTrace"
-                d="M45 5 H55 V45 H95 V55 H55 V95 H45 V55 H5 V45 H45 Z"/>
+                d="
+          M30 6  L50 26 L70 6
+          M34 6  L50 22 L66 6
+          M36 26 H64 V34 H36 Z
+          M46 34 H54 V48 H68 V56 H54 V70 H46 V56 H32 V48 H46 Z
+        "/>
         </svg>
 
         <div class="loader-text">
@@ -486,7 +499,7 @@
   <div style="max-width:720px; text-align:center; line-height:1.5;">
     <div style="font-weight:600; margin-bottom:10px;">Tell Me More</div>
     <p style="margin:0;">
-      Christians are not good people- we are forgiven people. The Bible makes the extraordinary claim that God came to earth to rescue those who have rejected His right authority.
+      Christians are not good people- we are forgiven people. The Bible makes the extraordinary claim that God came into the world He had made to rescue those who have rejected His right authority.
 
       [full gospel presentation, potentially a video]
     </p>
