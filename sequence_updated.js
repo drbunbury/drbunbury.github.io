@@ -46,11 +46,27 @@ const canvas = document.getElementById("sequenceCanvas");
 const ctx = canvas.getContext("2d", { alpha: false, desynchronized: true });
 
 const overlay = document.getElementById("loadingOverlay");
-const barEl = document.getElementById("loadingBar");
+const barEl = document.getElementById("loadingBar"); // may be null
 const pctEl = document.getElementById("loadingPct");
 
 const errorOverlay = document.getElementById("errorOverlay");
 const errorText = document.getElementById("errorText");
+
+const crossTrace = document.getElementById("crossTrace");
+let crossLen = 0;
+
+function initCrossTrace() {
+  if (!crossTrace) return;
+  crossLen = crossTrace.getTotalLength();
+  crossTrace.style.strokeDasharray = String(crossLen);
+  crossTrace.style.strokeDashoffset = String(crossLen);
+}
+
+function setCrossProgress(progress01) {
+  if (!crossTrace || !crossLen) return;
+  const p = clamp(progress01, 0, 1);
+  crossTrace.style.strokeDashoffset = String(crossLen * (1 - p));
+}
 
 // -------------------- Scroll lock --------------------
 let scrollLockY = 0;
@@ -291,13 +307,14 @@ const inFlight = new Set();
 const decodedSet = new Set();
 
 function updateLoadingUI() {
-  const pct = Math.round((decodedSet.size / frameCount) * 100);
-  barEl.style.width = `${pct}%`;
+  const progress01 = decodedSet.size / frameCount;
+  const pct = Math.round(progress01 * 100);
+
   pctEl.textContent = `${pct}%`;
+  setCrossProgress(progress01);
 
   if (decodedSet.size >= READY_THRESHOLD && overlay) {
     unlockScroll();
-
     overlay.style.transition = "opacity 250ms ease";
     overlay.style.opacity = "0";
     setTimeout(() => overlay.remove(), 260);
@@ -435,6 +452,7 @@ window.addEventListener("resize", onScroll);
 // -------------------- Init --------------------
 (async function init() {
   lockScroll();
+  initCrossTrace();
   try {
     useBW = await chooseBWvsColor();
     baseUrl = useBW ? baseUrlBW : baseUrlColor;

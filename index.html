@@ -221,6 +221,55 @@
       font-size: 14px;
     }
 
+    /* Loader: cross trace */
+    .loader-wrap{
+      display: grid;
+      place-items: center;
+      gap: 16px;
+    }
+
+    .cross-svg{
+      width: min(220px, 56vw);
+      height: auto;
+    }
+
+    #crossBg{
+      fill: none;
+      stroke: rgba(0,0,0,0.12);
+      stroke-width: 6;
+      stroke-linejoin: round;
+    }
+
+    #crossTrace{
+      fill: none;
+      stroke: rgba(0,0,0,0.88);
+      stroke-width: 6;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+
+      stroke-dasharray: 0;
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 120ms linear;
+    }
+
+    .loader-text{
+      text-align: center;
+      color: #111;
+    }
+
+    .loader-title{
+      font-weight: 600;
+      font-size: 14px;
+      opacity: 0.75;
+      margin-bottom: 6px;
+    }
+
+    .loader-pct{
+      font-weight: 650;
+      font-size: 18px;
+      letter-spacing: 0.02em;
+    }
+
     #errorOverlay {
       position: absolute;
       inset: 0;
@@ -409,12 +458,18 @@
     <canvas id="sequenceCanvas"></canvas>
 
     <div id="loadingOverlay">
-      <div style="width:min(360px, 80vw);">
-        <div style="margin-bottom:10px;">Loading…</div>
-        <div style="height:8px; background:rgba(0,0,0,0.15); border-radius:999px; overflow:hidden;">
-          <div id="loadingBar" style="height:100%; width:0%; background:#000;"></div>
+      <div class="loader-wrap" aria-hidden="true">
+        <svg class="cross-svg" viewBox="0 0 100 100" role="img" aria-label="Loading">
+          <path id="crossBg"
+                d="M45 5 H55 V45 H95 V55 H55 V95 H45 V55 H5 V45 H45 Z"/>
+          <path id="crossTrace"
+                d="M45 5 H55 V45 H95 V55 H55 V95 H45 V55 H5 V45 H45 Z"/>
+        </svg>
+
+        <div class="loader-text">
+          <div class="loader-title">Loading…</div>
+          <div id="loadingPct" class="loader-pct">0%</div>
         </div>
-        <div id="loadingPct" style="margin-top:10px; opacity:0.8;">0%</div>
       </div>
     </div>
 
