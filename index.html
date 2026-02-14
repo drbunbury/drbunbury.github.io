@@ -235,7 +235,7 @@
 
     #crossBg{
       fill: none;
-      stroke: rgba(0,0,0,0.12);
+      stroke: rgba(0,0,0,0);
       stroke-width: 0.75;
       stroke-linejoin: round;
       stroke-linecap: round;
@@ -272,7 +272,7 @@
       pointer-events: none;
 
       /* push it below the percentage */
-      transform: translateY(18px);
+      transform: translateY(-60px);
     }
 
     /* Centered text on top of the SVG */
@@ -289,6 +289,8 @@
 
       /* makes sure clicks/selection don’t feel weird */
       pointer-events: none;
+
+      transform: translateY(-80px);
     }
 
     #errorOverlay {
