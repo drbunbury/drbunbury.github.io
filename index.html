@@ -259,16 +259,36 @@
     }
 
     .loader-title{
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+
       font-weight: 600;
       font-size: 14px;
       opacity: 0.75;
-      margin-bottom: 6px;
+      color: #111;
+
+      pointer-events: none;
+
+      /* push it below the percentage */
+      transform: translateY(18px);
     }
 
+    /* Centered text on top of the SVG */
     .loader-pct{
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+
       font-weight: 650;
       font-size: 18px;
       letter-spacing: 0.02em;
+      color: #111;
+
+      /* makes sure clicks/selection don’t feel weird */
+      pointer-events: none;
     }
 
     #errorOverlay {
@@ -460,18 +480,18 @@
 
     <div id="loadingOverlay">
       <div class="loader-wrap" aria-hidden="true">
-        <svg class="cross-svg" viewBox="30 10 43 100" role="img" aria-label="Loading">
+        <div class="loader-figure">
+          <svg class="cross-svg" viewBox="30 10 43 130" role="img" aria-label="Loading">
           <path id="crossBg"
                 d="M 52 115 H 45 V 105 H 35 V 92 H 45 V 81 H 51 L 45 71 H 34 V 66 H 35 V 17 H 69 V 66 H 70 V 71 H 59 L 53 81 H 59 V 92 H 68 V 105 H 59 V 115 Z"/>
           <path id="crossTrace"
                 d="M 52 115 H 45 V 105 H 35 V 92 H 45 V 81 H 51 L 45 71 H 34 V 66 H 35 V 17 H 69 V 66 H 70 V 71 H 59 L 53 81 H 59 V 92 H 68 V 105 H 59 V 115 Z"/>
         </svg>
-
-        <div class="loader-text">
-          <div class="loader-title">Loading…</div>
-          <div id="loadingPct" class="loader-pct">0%</div>
-        </div>
+        <div id="loadingPct" class="loader-pct">0%</div>
       </div>
+
+      <div class="loader-title">Loading…</div>
+    </div>
     </div>
 
     <div id="errorOverlay" data-show="false">
