@@ -150,6 +150,20 @@
           font-size: 14px;
         }
         .menu-panel a:hover { background: rgba(0,0,0,0.05); }
+         /* Menu: style internal anchors vs external page links (this page only) */
+
+
+        /* Internal links (same page) start with # */
+        .menu-panel a[href^="#"]{
+          padding-left: 24px;   /* indent */
+          font-weight: 400;     /* normal weight */
+        }
+
+        /* External links (other pages) do NOT start with # */
+        .menu-panel a:not([href^="#"]){
+          padding-left: 12px;   /* keep default */
+          font-weight: 700;     /* bold */
+        }
 
         .backdrop {
           position: fixed;
@@ -270,28 +284,60 @@
 <div class="backdrop" id="menuBackdrop" data-open="false" aria-hidden="true"></div>
 <nav class="menu-panel" id="menuPanel" data-open="false">
     <a href="./index.html#sequenceSection">The Victorious Cross</a>
+    <a href="./sharing-my-faith.html">Sharing My Faith</a>
+    <a href="#making">Background</a>
     <a href="#making">Making a Victorious Cross</a>
     <a href="#ordering">Ordering</a>
     <a href="#how-to-fish">How to Fish</a>
 </nav>
 
-<section class="sequence-section" id="top">
-    <div class="sequence-sticky">
-        <div class="hero-box">
-            <div class="hero-kicker">Practical help & encouragement</div>
-            <h1 class="hero-title">Sharing My Faith</h1>
-            <p class="hero-sub">
-                Placeholder intro text. This page can explain practical ways to use “The Victorious Cross” tract,
-                how to make one, how to order, and simple guidance for starting conversations.
+<section class="spacer" id="background">
+    <div style="max-width:720px; text-align:center; line-height:1.5;">
+        <div style="font-weight:600; margin-bottom:10px;">Background</div>
+        <p style="margin:0; text-align:left;">
+            We wanted something to effectively communicate the good news of our Lord Jesus to our military friends and colleagues.
+            The form of the tract is intended both to allure (we all want another medal!) and to speak of the valour & free gift through the cross.<br>
+            <br>
+            The key element is that medals are earned whereas our Lord Jesus Christ freely gave Himself for us.
+            Whilst there is much theology around evangelism we believe that our role is simply to lift up Christ and people will be drawn to Him (John 3:14-15).
+            To that end we do not seek to give a point by point gospel message or a 'how to' guide- we want to 'put a stone in the shoe' such that
+            when circumstances arise.
+
+        <p style="margin:0; text-align:left;">
+            The Victorious Cross is built around the key verse about
+
+        <i>...the word of God is alive and active. Sharper than any double-edged sword,
+            it penetrates even to dividing soul and spirit, joints and marrow; it judges the thoughts and attitudes of the heart.
+        </i> (Hebrews 4:12) and <br><i> As the rain and the snow
+            come down from heaven,
+            and do not return to it
+            without watering the earth
+            and making it bud and flourish,
+            so that it yields seed for the sower and bread for the eater,
+            11 so is my word that goes out from my mouth:
+            It will not return to me empty,
+            but will accomplish what I desire
+            and achieve the purpose for which I sent it.</i> (Isaiah 55:10-11).
+
+            The tract expands on Romans 5:7-8:
+            <br>
+            <br>
+            <p style="margin:0 0 18px; text-align:center; font-style:italic; max-width:620px; margin-left:auto; margin-right:auto;">
+                Very rarely will anyone die for a righteous person, though for a good person someone might possibly dare to die.
+                But God demonstrates his own love for us in this: While we were still sinners, Christ died for us.</i><br>
             </p>
-        </div>
+            <br>
+
+
+
+        </p>
     </div>
 </section>
 
 <section class="spacer" id="making">
     <div style="max-width:720px; text-align:center; line-height:1.5;">
         <div style="font-weight:600; margin-bottom:10px;">Making a Victorious Cross</div>
-        <p style="margin:0;">
+        <p style="margin:0; text-align:left;">
             Placeholder text. Describe materials, printing, cutting, folding, and how to assemble.
             You can also add tips for durability (card stock, scoring fold lines, etc.) and a short checklist.
         </p>
@@ -301,7 +347,7 @@
 <section class="spacer" id="ordering">
     <div style="max-width:720px; text-align:center; line-height:1.5;">
         <div style="font-weight:600; margin-bottom:10px;">Ordering</div>
-        <p style="margin:0;">
+        <p style="margin:0; text-align:left;">
             Placeholder text. Explain how to order copies, delivery expectations, costs (if applicable),
             and what to do if someone wants them in bulk for an event or church.
         </p>
@@ -311,7 +357,7 @@
 <section class="spacer" id="how-to-fish">
     <div style="max-width:720px; text-align:center; line-height:1.5;">
         <div style="font-weight:600; margin-bottom:10px;">How to Fish</div>
-        <p style="margin:0;">
+        <p style="margin:0; text-align:left;">
             God wants us all to join Him in the wonderful work of proclaiming the Lord Jesus. The 'Victorious Cross' is a tool to help you in this work.
 
             We are all called to proclaim our Lord Jesus Christ. ()
