@@ -19,6 +19,7 @@
       --line: #111;
     }
 
+
     * { box-sizing: border-box; }
     html, body { height: 100%; }
 
@@ -393,16 +394,12 @@
       align-items: center;
       text-align: left;
 
-      border: 1px solid rgba(0,0,0,0.25);
+      border: 0px solid rgba(0,0,0,0.25);
       background: #fff;
       padding: 12px;
       border-radius: 0;
 
-      box-shadow:
-        0 1px 0 rgba(0,0,0,0.20),
-        1px 2px 0 rgba(0,0,0,0.15),
-        2px 4px 0 rgba(0,0,0,0.08),
-        3px 6px 0 rgba(0,0,0,0.04);
+      box-shadow: none;
     }
 
     /* no image: content only, same padding/border/shadow */
@@ -470,9 +467,9 @@
 <nav class="menu-panel" id="menuPanel" data-open="false">
   <a href="#sequenceSection">The Victorious Cross</a>
   <a href="#more-info">Tell me more</a>
-  <a href="#contact">Contact Us</a>
-  <a href="#resources">Recommended Resources</a>
-  <a href="#about">About Us</a>
+  <a href="#contact">Contact</a>
+  <a href="#resources">Resources</a>
+  <a href="#about">About</a>
   <a href="./sharing-my-faith.html">Sharing My Faith</a>
 </nav>
 
@@ -550,49 +547,78 @@
   </div>
 </section>
 
-<div class="resources-list">
 
-  <div class="resource-card">
-    <img
-            class="resource-thumb"
-            src="./images/SASRA-Logo-200.png"
-            alt="SASRA logo"
-            loading="lazy"
-            onerror="this.hidden=true; this.closest('.resource-card')?.classList.add('resource-card--noimg');"
-    />
-    <div>
-      <div class="resource-title">
-        <a href="https://www.sasra.org.uk" target="_blank" rel="noopener">SASRA</a>
+<section class="spacer" id="resources">
+  <div style="max-width:720px; text-align:center; line-height:1.5; width:100%;">
+    <div style="font-weight:600; margin-bottom:10px;">Resources</div>
+
+    <div class="resources-list">
+      <div class="resource-card">
+        <img
+                class="resource-thumb"
+                src="./images/SASRA-Logo-200.png"
+                alt="SASRA logo"
+                loading="lazy"
+                onerror="this.hidden=true; this.closest('.resource-card')?.classList.add('resource-card--noimg');"
+        />
+        <div>
+          <div class="resource-title">
+            <a href="https://www.sasra.org.uk" target="_blank" rel="noopener">SASRA</a>
+          </div>
+          <p class="resource-desc">
+            Working alongside the Chaplaincy, SASRA Scripture Readers work to introduce soldiers and air force personnel to a practical experience of the Christian faith by living and working alongside them. Christianity is based on relationship - with God and each other .Being a Christian is a team sport. SASRA can put you in touch with a local Scripture Reader or a local church.
+          </p>
+        </div>
       </div>
-      <p class="resource-desc">
-        Working alongside the Chaplaincy, SASRA Scripture Readers work to introduce soldiers and air force personnel to a practical experience of the Christian faith by living and working alongside them.
-      </p>
+
+      <div class="resource-card">
+        <img
+                class="resource-thumb"
+                src="./images/NMBS_Logo_Full.jpg"
+                alt="NMBS logo"
+                loading="lazy"
+                onerror="this.hidden=true; this.closest('.resource-card')?.classList.add('resource-card--noimg');"
+        />
+        <div>
+          <div class="resource-title">
+            <a href="https://www.nmbs.org.uk" target="_blank" rel="noopener">
+              Naval &amp; Military Bible Society (NMBS)
+            </a>
+          </div>
+          <p class="resource-desc">
+            The Naval &amp; Military Bible Society provides free Bibles, literature and digital to serving personnel.
+          </p>
+        </div>
+      </div>
+
+      <div class="resource-card">
+        <div class="resource-thumb-wrap">
+          <img
+                  class="resource-thumb"
+                  src="./images/bibleproject-logo-mark.svg"
+                  alt="bible project logo"
+                  loading="lazy"
+                  onerror="this.hidden=true; this.closest('.resource-thumb-wrap')?.remove(); this.closest('.resource-card')?.classList.add('resource-card--noimg');"
+          />
+        </div>
+        <div>
+          <div class="resource-title">
+            <a href="https://bibleproject.com" target="_blank" rel="noopener">The Bible Project</a>
+          </div>
+          <p class="resource-desc">
+            The Bible Project videos are an excellent starting point for getting to grips with the bible and its themes. It is a great resource to use alongside reading the Bible.
+          </p>
+        </div>
+      </div>
     </div>
   </div>
-
-  <div class="resource-card">
-    <div>
-      <div class="resource-title">
-        <a href="https://bibleproject.com" target="_blank" rel="noopener">The Bible Project</a>
-      </div>
-      <p class="resource-desc">
-        The Bible Project provides short videos and study resources that help explain the Bible’s
-        story, themes, and how the books connect.
-      </p>
-    </div>
-  </div>
-
-
-
-</div>
+</section>
 
 <section class="spacer" id="about">
   <div style="max-width:720px; text-align:center; line-height:1.5;">
     <div style="font-weight:600; margin-bottom:10px;">About</div>
     <p style="margin:0;">
-      'The Victorious Cross' was created by serving Christians to tell the wonderful truth of our Lord and Saviour Jesus Christ.
-      God wants to use us in the wonderful work of telling others about the Lord Jesus. This tract is designed so that you can have
-      something that you would want to give to a friend... to put a stone in their shoe and lift up the Lord...
+      The 'Victorious Cross' was created by a group of Christians in the military. We want to share the most valuable treasure we have: forgiveness & eternal life in the Lord Jesus Christ. If you would like more information please get in touch via the form or speak with the person who gave you a Victorious Cross.
     </p>
   </div>
 </section>
