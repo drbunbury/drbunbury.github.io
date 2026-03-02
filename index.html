@@ -571,10 +571,16 @@
       Please drop us a line using the form below. We would be delighted to have conversation or link you up with someone locally.
     </p>
 
-    <form id="contactForm" class="contact-grid" style="text-align:left;">
+    <form
+            method="POST"
+            action="https://formspree.io/f/xjgedzae"
+            id="contactForm" class="contact-grid" style="text-align:left;">
+
+      <input type="hidden" name="_subject" value="New enquiry from Victorious Cross">
+
       <div class="field">
         <label for="name">Name</label>
-        <input id="name" name="name" autocomplete="name" required />
+        <input id="name" name="name" type="text" autocomplete="name" required />
       </div>
 
       <div class="field">
@@ -587,13 +593,17 @@
         <textarea id="message" name="message" required></textarea>
       </div>
 
+      <div class="field">
+        <input type="text" name="_gotcha" style="display:none"/>
+      </div>
+
       <div class="contact-actions">
         <button class="btn" type="submit" id="submitBtn">Send</button>
       </div>
 
       <div id="formStatus"></div>
-    </form>
 
+    </form>
   </div>
 </section>
 
@@ -711,11 +721,43 @@
 <script>
   const form = document.getElementById("contactForm");
   const statusEl = document.getElementById("formStatus");
+  const submitBtn = document.getElementById("submitBtn");
 
-  form?.addEventListener("submit", (e) => {
+  form?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    statusEl.textContent = "Thanks — this form isn’t wired up yet.";
+
+    statusEl.textContent = "";
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Sending...";
+
+    try {
+      const response = await fetch(form.action, {
+        method: "POST",
+        body: new FormData(form),
+        headers: {
+          Accept: "application/json"
+        }
+      });
+
+      if (response.ok) {
+        form.reset();
+        statusEl.textContent = "Contact, wait out.";
+      } else {
+        const data = await response.json();
+        if (data.errors) {
+          statusEl.textContent = data.errors.map(err => err.message).join(", ");
+        } else {
+          statusEl.textContent = "Something went wrong. Please try again.";
+        }
+      }
+    } catch (error) {
+      statusEl.textContent = "Network error. Please try again.";
+    }
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Send";
   });
 </script>
+
 </body>
 </html>
