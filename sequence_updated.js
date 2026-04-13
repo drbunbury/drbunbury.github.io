@@ -1,13 +1,8 @@
 // -------------------- CONFIG --------------------
 const frameCount = 83;
 
-// COLOR set
-const baseUrlColor = "/images/webp/";
-const filePrefixColor = "VC_Colour";
-
-// BW set
-const baseUrlBW = "/images/webp_bw/";
-const filePrefixBW = "VC_BW";
+const baseUrl = "/images/webp/";
+const filePrefix = "VC_Colour";
 
 const padTo = 4;
 const ext = "webp";
@@ -114,71 +109,6 @@ function preventScrollKeys(e) {
   if (keys.includes(e.key)) e.preventDefault();
 }
 
-// -------------------- Set selection (measured probe) --------------------
-function connHintsSaySlow() {
-  const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-  if (!conn) return false;
-
-  const saveData = !!conn.saveData;
-  const effectiveType = conn.effectiveType || "";
-  const slowType = ["slow-2g", "2g"].includes(effectiveType); // be stricter here
-  const downlink = typeof conn.downlink === "number" ? conn.downlink : null;
-  const rtt = typeof conn.rtt === "number" ? conn.rtt : null;
-
-  // Treat these as strong hints, not gospel
-  const lowDownlink = downlink !== null && downlink <= 1.0;
-  const highRtt = rtt !== null && rtt >= 450;
-
-  return saveData || slowType || lowDownlink || highRtt;
-}
-
-async function timedFetch(url, { timeoutMs = 2000, cache = "no-store" } = {}) {
-  const controller = new AbortController();
-  const t0 = performance.now();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
-
-  try {
-    const resp = await fetch(url, { cache, signal: controller.signal });
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const blob = await resp.blob();
-    const t1 = performance.now();
-    return { ms: t1 - t0, bytes: blob.size };
-  } finally {
-    clearTimeout(timer);
-  }
-}
-
-async function chooseBWvsColor() {
-  // 1) strong user/device hint
-  if (connHintsSaySlow()) return true;
-
-  // 2) If the user explicitly prefers reduced data (nice extra signal)
-  if (window.matchMedia && window.matchMedia("(prefers-reduced-data: reduce)").matches) {
-    return true;
-  }
-
-  // 3) Real probe: try fetching COLOR frame 1 quickly.
-  // If it’s slow, prefer BW.
-  const colorFirstUrl = `${baseUrlColor}${filePrefixColor}${String(1).padStart(padTo, "0")}.${ext}`;
-
-  try {
-    const { ms, bytes } = await timedFetch(colorFirstUrl, { timeoutMs: 2200, cache: "no-store" });
-
-    // Estimate Mbps from this sample
-    const mbps = (bytes * 8) / (ms / 1000) / 1_000_000;
-
-    // Thresholds: tune for your content.
-    // If the first frame is taking ages or throughput is low, go BW.
-    const tooSlowTime = ms > 1200;     // >1.2s for one frame feels sluggish
-    const tooSlowMbps = mbps < 3.0;    // <3 Mbps is often “painful” for heavy sequences
-
-    return tooSlowTime || tooSlowMbps;
-  } catch {
-    // Probe failed or timed out => safer to go BW
-    return true;
-  }
-}
-
 // -------------------- Menu --------------------
 const menuBtn = document.getElementById("menuBtn");
 const menuPanel = document.getElementById("menuPanel");
@@ -202,80 +132,6 @@ menuPanel.querySelectorAll("a").forEach((a) => a.addEventListener("click", () =>
 
 // -------------------- Utils --------------------
 function clamp(x, a, b) { return Math.min(b, Math.max(a, x)); }
-
-// Decide BW vs COLOR once at load time (based on connection only)
-function shouldUseBW() {
-  const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-
-  // If not supported, default to COLOR
-  if (!conn) return false;
-
-  const saveData = !!conn.saveData;
-  const effectiveType = conn.effectiveType || ""; // slow-2g,2g,3g,4g
-  const slowType = ["slow-2g", "2g", "3g"].includes(effectiveType);
-
-  const downlink = typeof conn.downlink === "number" ? conn.downlink : null; // Mbps
-  const lowDownlink = downlink !== null && downlink <= 1.5;
-
-  // RTT in ms (if provided)
-  const rtt = typeof conn.rtt === "number" ? conn.rtt : null;
-  const highRtt = rtt !== null && rtt >= 300;
-
-  return saveData || slowType || lowDownlink || highRtt;
-}
-
-let useBW = false;
-let baseUrl = baseUrlColor;
-let filePrefix = filePrefixColor;
-
-function drawDebugFrameLabel(frameIndex, dx, dy, dw, dh) {
-  const dpr = window.devicePixelRatio || 1;
-
-  ctx.save();
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
-
-  const setLabel = useBW ? "BW" : "COLOR";
-  const text = `${setLabel} — Frame ${frameIndex + 1} / ${frameCount}`;
-
-  const fontPx = Math.max(14, Math.round(16 * dpr));
-  ctx.font = `600 ${fontPx}px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial`;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "bottom";
-
-  const metrics = ctx.measureText(text);
-  const padX = Math.round(10 * dpr);
-  const padY = Math.round(6 * dpr);
-
-  const w = Math.ceil(metrics.width + padX * 2);
-  const h = Math.ceil(fontPx + padY * 2);
-
-  const x = Math.round(dx + dw / 2);
-  const margin = Math.round(12 * dpr);
-  const y = Math.round(dy + dh - margin);
-
-  const left = x - w / 2;
-  const top = y - h;
-
-  ctx.fillStyle = "rgba(255,255,255,0.75)";
-  ctx.strokeStyle = "rgba(0,0,0,0.35)";
-  ctx.lineWidth = Math.max(1, Math.round(1 * dpr));
-
-  const r = Math.round(8 * dpr);
-  ctx.beginPath();
-  ctx.moveTo(left + r, top);
-  ctx.arcTo(left + w, top, left + w, top + h, r);
-  ctx.arcTo(left + w, top + h, left, top + h, r);
-  ctx.arcTo(left, top + h, left, top, r);
-  ctx.arcTo(left, top, left + w, top, r);
-  ctx.closePath();
-  ctx.fill();
-  ctx.stroke();
-
-  ctx.fillStyle = "#111";
-  ctx.fillText(text, x, y - padY);
-
-  ctx.restore();
-}
 
 function frameUrl(i) {
   const n = String(i + 1).padStart(padTo, "0");
@@ -411,11 +267,6 @@ function drawBitmapCenteredNoScaleCrop(bitmap, frameIndex) {
   const sh = visH / (dpr * scale);
 
   ctx.drawImage(bitmap, sx, sy, sw, sh, visX0, visY0, visW, visH);
-
-  // Debug label (bottom-centre of drawn image)
-  //if (typeof frameIndex === "number") {
-  //  drawDebugFrameLabel(frameIndex, dx, dy, dw, dh);
-  //}
 }
 
 // -------------------- Scroll handling --------------------
@@ -454,13 +305,6 @@ window.addEventListener("resize", onScroll);
   lockScroll();
   initCrossTrace();
   try {
-    useBW = await chooseBWvsColor();
-    baseUrl = useBW ? baseUrlBW : baseUrlColor;
-    filePrefix = useBW ? filePrefixBW : filePrefixColor;
-
-    console.log("Sequence set:", useBW ? "BW" : "COLOR");
-    console.log("First frame URL:", frameUrl(0));
-
     const first = await decodeFrame(0);
     if (!first) throw new Error("Failed to decode first frame.");
     drawBitmapCenteredNoScaleCrop(first, 0);

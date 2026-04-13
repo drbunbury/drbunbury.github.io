@@ -440,6 +440,74 @@
       font-size: 14px;
     }
 
+    /* Bible verse links & tooltips */
+    .verse-link {
+      position: relative;
+      color: inherit;
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      text-underline-offset: 2px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .verse-tooltip {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 290px;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.22);
+      border-radius: 3px;
+      padding: 10px 13px;
+      font-size: 13px;
+      line-height: 1.55;
+      color: #111;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.10);
+      z-index: 500;
+      font-style: normal;
+      font-weight: 400;
+      text-decoration: none;
+      white-space: normal;
+      pointer-events: none;
+      text-align: left;
+    }
+
+    /* caret border */
+    .verse-tooltip::before {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 7px solid transparent;
+      border-top-color: rgba(0,0,0,0.22);
+    }
+
+    /* caret fill */
+    .verse-tooltip::after {
+      content: '';
+      position: absolute;
+      top: calc(100% - 1px);
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: #fff;
+    }
+
+    .verse-link:hover .verse-tooltip,
+    .verse-link:focus .verse-tooltip {
+      display: block;
+    }
+
+    .verse-tooltip-ref {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 5px;
+    }
+
     /* Mobile */
     @media (max-width: 560px){
       :root{ --resource-img-h: 120px; }
@@ -507,38 +575,26 @@
   <div style="max-width:720px; text-align:center; line-height:1.5;">
     <div style="font-weight:600; margin-bottom:10px;">Tell Me More</div>
     <p style="margin:0;text-align:left;">
-    Look around you- what do you see? Peace? Beauty? Safety? For those of us who have served we have often seen the opposite: destruction, pain, death & abuse of power.
-      <br>
+    Look around you: what do you see? Peace? Beauty? Safety? For those of us who have served we have often seen the opposite: destruction, pain, death & abuse of power.
       And yet, even in the worst of times we <i>do</i> glimpse beauty. That misty early morning patrol, the hospitality of a villager or
-      the sacrifice of a friend.<br>
+      the sacrifice of a friend. If Christianity is true it must explain these opposites: beauty & ugliness, life & death, abuse & sacrifice.<br>
       <br>
-      If Christianity is true it must explain these opposites: beauty & ugliness, life & death, abuse & sacrifice.<br>
-      <br>
-      In the Bible we read of a world made good. mankind made like God: noble, strong, creative- <i>good</i>. We read how we spoilt ourselves & the world by greed & pride- the bible calls this sin.
+      In the Bible we read of a world made good and mankind made <i>like</i> God: noble, strong, creative- <i>good</i>. We read how we spoilt both ourselves & the world by our greed & pride- the bible calls this sin.
       Sin didn't just corrupt us- it damaged creation itself.
 
-      <i>God made us good - Sin made us bad. </i>. So that's what we see: a good world spoiled, good people fallen.<br>
+      <i>God made us good - Sin made us bad. </i>. So that's what we see: a good world spoiled & good people fallen.<br>
       <br>
+      Now while that may explain the mess we see around and inside us, it still doesn't give us any hope. That's where we need a rescue - <i> and a rescuer</i>.
+      That's where we come to the Victorious Cross: God Himself. Coming into His own creation. To make peace with us by dying on the cross in our place, paying for all our sins.
+      The bible says '<i>without the shedding of blood there is no forgiveness</i>' (<a href="https://www.biblegateway.com/passage/?search=Hebrews+9%3A22&version=NIV" class="verse-link" target="_blank" rel="noopener">Hebrews 9:22<span class="verse-tooltip"><span class="verse-tooltip-ref">Hebrews 9:22 (NIV)</span>In fact, the law requires that nearly everything be cleansed with blood, and without the shedding of blood there is no forgiveness.</span></a>).
       <br>
-      Whilst that may explain what we see around us it still doesn't give us any hope. That's where we need a rescue.
+      at just the right time... Christ died for the ungodly.... This is offensive-
       <br>
-      <br>
-      Close air support, our own mortars firing, in the darkness at the RV hearing the chinook thumping in low over our heads to extract us.
-      None of them come close. This rescue was infinitely more audacious, more dramatic, more significant, more complete than our experience - or any war film.
-      <br>
-      God Himself. Coming into His own creation. To make peace with us, to die on the cross, paying for all our sins- and to rise again. Death could not hold Him,
-      the religious could not suppress Him, the Romans could not convict Him.
+      But a dead rescuer isn't much use to anyone. It says in the bible <i>'...if Christ has not been raised, your faith is futile; you are still in your sins. ... If only for this life we have hope in Christ, we are of all people most to be pitied.'</i>
+      (<a href="https://www.biblegateway.com/passage/?search=1+Corinthians+15%3A17%2C19&version=NIV" class="verse-link" target="_blank" rel="noopener">1 Corinthians 15:17 &amp; 19<span class="verse-tooltip"><span class="verse-tooltip-ref">1 Corinthians 15:17, 19 (NIV)</span>And if Christ has not been raised, your faith is futile; you are still in your sins… If only for this life we have hope in Christ, we are of all people most to be pitied.</span></a>). So let me nail my colours to the mast. Jesus Christ
+      If Jesus Christ didn't rise from the dead my faith is worthless. More than that I am to be pitied more than anyone else. 'Eat drink & be merry for tomorrow we die' is the logical response to that lack of hope
 
-      'It is Finished' He said- and it was.<br>
-      <br>
-      <br>
-      So what? You have a choice. Ignore it & go your own way or turn and follow every Commander in Chief's Commander in Chief.
-
-      Perhaps you long for this to be true, you <i>want</i> to believe but think that this it is a myth or a fairytale. We say not.
-      More contemporary historical references than Julius Caesar, . But don't take our word for it- ...
-
-      The Bible makes the extraordinary claim that God came into the world He had made to rescue those who have rejected His right authority.
-
+      so let me nail my colours to the mast. Jesus Christ died, rose again to life & is coming back.
     </p>
   </div>
 </section>
@@ -563,7 +619,7 @@
     <p style="margin:0 0 20px; text-align:left;">
       Christianity is built on reason & relationship:<br>
       <br>
-      God calls us 'to reason together' (Isaiah 1:18). You have questions? Good- so do we!<br>
+      God calls us 'to reason together' (<a href="https://www.biblegateway.com/passage/?search=Isaiah+1%3A18&version=NIV" class="verse-link" target="_blank" rel="noopener">Isaiah 1:18<span class="verse-tooltip"><span class="verse-tooltip-ref">Isaiah 1:18 (NIV)</span>"Come now, let us reason together," says the LORD. "Though your sins are like scarlet, they shall be as white as snow; though they are red as crimson, they shall be like wool."</span></a>). You have questions? Good- so do we!<br>
       We may not have all the answers but we are always ready to give an honest response to an honest challenge.<br>
       <br>
       We are not interested in 'fire and forget' religious diatribes: you are not a target and this message is more valuable than any guided missile.<br>
@@ -663,6 +719,7 @@
                 loading="lazy"
                 onerror="this.hidden=true; this.closest('.resource-card')?.classList.add('resource-card--noimg');"
         />
+
         <div>
           <div class="resource-title">
             <a href="https://www.nmbs.org.uk" target="_blank" rel="noopener">
